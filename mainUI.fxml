@@ -1,0 +1,78 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.ListView?>
+<GridPane fx:controller="JosephSmith.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="45"/>
+        <ColumnConstraints percentWidth="45"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="10"/>
+        <RowConstraints percentHeight="50"/>
+    </rowConstraints>
+
+    <Label text="Warranty Machine Form" GridPane.columnIndex="0"
+           GridPane.rowIndex="0" GridPane.columnSpan="2"
+           GridPane.rowSpan="1" GridPane.halignment="CENTER" GridPane.valignment="BASELINE">
+        <font>
+            <Font name="Arial" size="24"/>
+        </font>
+    </Label>
+
+    <Label text="Enter Service Tag: " GridPane.columnIndex="0"
+           GridPane.rowIndex="1" GridPane.valignment="BASELINE"/>
+    <TextField fx:id="serviceTagTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"
+               GridPane.valignment="BASELINE" onAction="#onServiceTagInputEnter"/>
+
+    <Label text="Select Machine Issue" GridPane.columnIndex="0"
+           GridPane.rowIndex="2" GridPane.valignment="BASELINE"/>
+    <ComboBox fx:id="machineIssueComboBox"  GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS"
+              GridPane.valignment="BASELINE" onKeyPressed="#onComboKeyEnter" onAction="#onComboBoxChange"/>
+
+    <Label fx:id="batterySerialNumberLabel" text="Battery Serial Number" GridPane.columnIndex="0"
+           GridPane.rowIndex="3" GridPane.valignment="BASELINE" visible="false"/>
+    <TextField fx:id="batterySerialNumberTextField" GridPane.columnIndex="1" GridPane.rowIndex="3"
+               GridPane.valignment="BASELINE" GridPane.hgrow="ALWAYS" visible="false" disable="true"/>
+
+    <ListView fx:id="warrantyMachineListView" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2"
+              GridPane.hgrow="ALWAYS" >
+    </ListView>
+
+
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.columnSpan="1" spacing="10" alignment="BOTTOM_RIGHT">
+        <Button fx:id="submitMachineButton" text="Submit Machine" HBox.hgrow="ALWAYS" onAction="#submitMachineButton"/>
+        <Button fx:id="initiateWarranty" text="Initiate Warranty" HBox.hgrow="ALWAYS" onAction="#initiateWarrantyButton"/>
+        <Button fx:id="viewLog" text="View Log" HBox.hgrow="ALWAYS" onAction="#displayLog"/>
+        <Button fx:id="newMachineIssueButton" text="Add New Machine Issue" HBox.hgrow="ALWAYS" onAction="#showNewIssueDialog"/>
+        <padding>
+            <Insets top="20"/>
+        </padding>
+    </HBox>
+
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="1" spacing="10" alignment="BOTTOM_LEFT">
+        <Button fx:id="removeListViewItem" text="Remove Selected Items" HBox.hgrow="ALWAYS" onAction="#removeFromListView"/>
+        <Label fx:id="listViewCountLabel" style="fx-font-weight: bold;">
+            <font>
+                <Font size="16"/>
+            </font>
+        </Label>
+    </HBox>
+</GridPane>
