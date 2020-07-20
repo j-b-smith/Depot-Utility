@@ -10,6 +10,8 @@ import java.util.Date;
 public class DatabaseHelper {
     Connection connection = null;
 
+    String test = "This is a version control test";
+
     //Constructor
     public DatabaseHelper(){}
 
