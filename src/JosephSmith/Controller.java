@@ -2,7 +2,6 @@ package JosephSmith;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,10 +32,7 @@ public class Controller implements Initializable {
     public ListView<WarrantyMachine> warrantyMachineListView;
     public Button removeListViewItem;
     public Label listViewCountLabel;
-    public ArrayList<String> credentials;
     public Label alertLabel;
-    public ProgressBar warrantyMachineProgress;
-    public Label warrantyMachineProgressLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
