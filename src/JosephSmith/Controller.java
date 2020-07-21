@@ -2,6 +2,7 @@ package JosephSmith;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,13 +35,12 @@ public class Controller implements Initializable {
     public Label listViewCountLabel;
     public ArrayList<String> credentials;
     public Label alertLabel;
+    public ProgressBar warrantyMachineProgress;
+    public Label warrantyMachineProgressLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        //Get login credentials from Main
-        Main main = new Main();
-        credentials = main.credentials;
         populateMachineIssueComboBox();
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
@@ -64,8 +64,8 @@ public class Controller implements Initializable {
     Clear the list view
      */
     public void initiateWarrantyButton(){
-        //showLoginDialog();
         listViewCountLabel.setText("");
+        warrantyMachineListView.getItems().clear();
         Thread warrantyThread = new Thread(() -> {
             try {
                 performWarranty();
@@ -74,7 +74,6 @@ public class Controller implements Initializable {
             }
         });
         warrantyThread.start();
-        warrantyMachineListView.getItems().clear();
     }
     
     /*
@@ -241,25 +240,6 @@ public class Controller implements Initializable {
     }
 
     /*
-    public void createWarrantyMachineTable(){
-
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
-
-        //Create warranty machine table
-        database.createNewTable("WarrantyMachines", "Service_Tag");
-        database.addNewColumn("WarrantyMachines", "Machine_Issue");
-        database.addNewColumn("WarrantyMachines", "Troubleshooting_Steps");
-        database.addNewColumn("WarrantyMachines", "Part_Needed");
-        database.addNewColumn("WarrantyMachines", "Battery_Serial_Number");
-
-        database.closeConnection();
-    }
-
-     */
-
-    /*
     Write warranty machines to the warranty machine table
      */
     public void writeWarrantyMachineTable(){
@@ -268,17 +248,17 @@ public class Controller implements Initializable {
         WarrantyMachine warrantyMachine;
 
         //Machine issue selection
-        int machineIssueSelection = machineIssueComboBox.getSelectionModel().getSelectedIndex();
+        String machineIssueSelection = machineIssueComboBox.getSelectionModel().getSelectedItem();
 
         //Create database helper and connect
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
 
-        //Get values from description sheet
-        String machineIssue = database.getCellValue("Machine_Issue", "DescriptionSheet", machineIssueSelection);
-        String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "DescriptionSheet", machineIssueSelection);
-        String partNeeded = database.getCellValue("Part_Needed", "DescriptionSheet", machineIssueSelection);
+        //Get values from description sheet based on machine issue selection value
+        String machineIssue = database.getCellValue("Machine_Issue", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
+        String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
+        String partNeeded = database.getCellValue("Part_Needed", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
 
         //Check if part needed is a battery
         //Write machine object to database

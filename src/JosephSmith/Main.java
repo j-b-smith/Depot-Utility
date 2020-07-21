@@ -4,25 +4,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Optional;
-
 public class Main extends Application {
-    ArrayList<String> credentials;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
         Parent root = FXMLLoader.load(getClass().getResource("mainUI.fxml"));
-        //root.setStyle("-fx-background-color: lightgray;");
-
-        //Debug
-        //root.setStyle("-fx-background-color: yellow;");
         primaryStage.setTitle("Dell Warranty Utility");
 
         //Create main window scene
@@ -34,6 +23,7 @@ public class Main extends Application {
 
     }
 
+    /*
     //Display the dialog when "Add New Machine Issue" is clicked in mainUI
     public ArrayList<String> showLoginDialog() throws IOException {
 
@@ -68,5 +58,7 @@ public class Main extends Application {
         }
         return credentials;
     }
+
+     */
 
     public static void main(String[] args) { launch(args);}}

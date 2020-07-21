@@ -1,7 +1,6 @@
 package JosephSmith;
 
 import javafx.collections.ObservableList;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,8 +9,6 @@ import java.util.Date;
 public class DatabaseHelper {
     Connection connection = null;
 
-    String test = "This is a version control test";
-
     //Constructor
     public DatabaseHelper(){}
 
@@ -19,12 +16,13 @@ public class DatabaseHelper {
     public void connect(){
         try {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\jsmit\\Documents\\dellAutomate.sqlite");
+            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\jsmit\\IdeaProjects\\warrantyUtility\\dellAutomate.sqlite");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
+    //Close database connection
     public void closeConnection(){
         try {
             connection.close();
@@ -33,6 +31,9 @@ public class DatabaseHelper {
         }
     }
 
+    /*
+    Retrieve a row from the LogSheet by index as a Log Entry object for Log Table
+     */
     public LogEntry getLogRow(int index){
 
         return new LogEntry(getCellValue("Date", "LogSheet", index),
@@ -43,10 +44,12 @@ public class DatabaseHelper {
                 (getCellValue("Part_Needed", "LogSheet", index)));
     }
 
+    //Convert the log entry to a string for filtering
     public String logEntryToString(LogEntry entry){
         return entry.date + " " + entry.requestNumber + " " + entry.serviceTag + " " + entry.model + " " + entry.machineIssue + " " + entry.partNeeded;
     }
 
+    //Get the number of rows in a table
     public int getRowCount(String tableName){
         int count = 0;
         try (Statement statement = connection.createStatement()){
@@ -65,7 +68,9 @@ public class DatabaseHelper {
         return count;
     }
 
-
+    /*
+    Get cell value by index
+     */
     public String getCellValue(String columnName, String tableName, int index) {
         //Increment index for database use
         index +=1;
@@ -73,9 +78,8 @@ public class DatabaseHelper {
 
         try(Statement statement = connection.createStatement()) {
             //Get result set
-
             ResultSet tempValue = statement.executeQuery
-                    ("SELECT " + columnName + " FROM " + tableName + " WHERE rowid = " + index + ";");
+                    ("SELECT " + columnName + " FROM " + tableName + " WHERE rowid= " + index + ";");
             //Move cursor to first position
             tempValue.next();
 
@@ -86,6 +90,30 @@ public class DatabaseHelper {
         }
         return value;
     }
+
+    /*
+    Get cell value by value
+     */
+    public String getCellValue(String returnColumn, String tableName, String sortColumn, String sortValue) {
+        //Increment index for database use
+        String value = null;
+
+        try(Statement statement = connection.createStatement()) {
+            //Get result set
+
+            ResultSet tempValue = statement.executeQuery
+                    ("SELECT " + returnColumn + " FROM " + tableName + " WHERE " + sortColumn + "= \"" + sortValue + "\";");
+            //Move cursor to first position
+            tempValue.next();
+
+            //Get cell value as string
+            value = tempValue.getString(returnColumn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
     /*
     Get number of rows that contain a specific value
      */
@@ -107,18 +135,7 @@ public class DatabaseHelper {
         return count;
     }
 
-    /*
-    Add and Delete tables
-     */
-    public void createNewTable(String tableName, String columnName){
-
-        try (Statement statement = connection.createStatement()){
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS "  + tableName + " (" + columnName +  " text NOT NULL);");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
+    //Clear table
     public void clearTable(String tableName){
 
         try(Statement statement = connection.createStatement()){
@@ -126,20 +143,6 @@ public class DatabaseHelper {
         } catch (SQLException e){
             e.printStackTrace();
         }
-    }
-
-    /*
-    Add new column
-     */
-
-    public void addNewColumn(String tableName, String columnName){
-
-        try(Statement statement = connection.createStatement()) {
-            statement.executeUpdate("ALTER TABLE " + tableName + " ADD " + columnName + " VARCHAR;");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-
     }
 
     /*
@@ -213,7 +216,7 @@ public class DatabaseHelper {
 
 
     /*
-    remove row from warranty machine table by list of machines
+    remove rows from warranty machine table by list of machines
      */
     public void removeRowsFromWarrantyMachines(ObservableList<WarrantyMachine> list){
 
@@ -248,7 +251,7 @@ public class DatabaseHelper {
 
             //Prevent executeQuery nullPointerException
             assert statement != null;
-            resultSet = statement.executeQuery("SELECT " + column + " FROM " + tableName + ";");
+            resultSet = statement.executeQuery("SELECT " + column + " FROM " + tableName + " ORDER BY " + column + " ASC ;");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -83,14 +83,19 @@ public class NewIssueDialogController implements Initializable {
     Hide the Label and Input if anything else is selected
      */
     public void partComboBoxChange(){
-        if (newPartNeededComboBox.getValue().equals("Add New Part")){
-            addNewPartLabel.setVisible(true);
-            addNewPartInput.setVisible(true);
-            addNewPartInput.setDisable(false);
-        } else {
-            addNewPartLabel.setVisible(false);
-            addNewPartInput.setVisible(false);
-            addNewPartInput.setDisable(true);
-        }
+       try {
+           if (newPartNeededComboBox.getSelectionModel().getSelectedItem().equals("Add New Part")) {
+               addNewPartLabel.setVisible(true);
+               addNewPartInput.setVisible(true);
+               addNewPartInput.setDisable(false);
+           } else {
+               addNewPartLabel.setVisible(false);
+               addNewPartInput.setVisible(false);
+               addNewPartInput.setDisable(true);
+           }
+       } catch (NullPointerException e){
+           e.printStackTrace();
+           e.getCause();
+       }
     }
 }

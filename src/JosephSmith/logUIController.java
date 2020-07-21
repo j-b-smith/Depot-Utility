@@ -39,7 +39,6 @@ public class logUIController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        AnchorPane.setBottomAnchor(logUIButtonHBox, 20.0);
         populateLogTable();
     }
 
