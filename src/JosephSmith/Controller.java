@@ -51,13 +51,13 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void displayLog() throws IOException{
+    private void displayLog() throws IOException {
         try {
             Stage stage = (Stage) viewLog.getScene().getWindow();
             GridPane root = FXMLLoader.load(getClass().getResource("logSheetUI.fxml"));
             Scene scene = new Scene(root, 1200, 700);
             stage.setScene(scene);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -66,7 +66,7 @@ public class Controller implements Initializable {
     Run the warranty process on a separate thread to avoid UI stall
     Clear the list view
      */
-    public void initiateWarrantyButton(){
+    public void initiateWarrantyButton() {
         listViewCountLabel.setText("");
         warrantyMachineListView.getItems().clear();
         Thread warrantyThread = new Thread(() -> {
@@ -78,7 +78,7 @@ public class Controller implements Initializable {
         });
         warrantyThread.start();
     }
-    
+
     /*
     Write the value to the warranty machine table
     Clear the service tag field
@@ -87,16 +87,16 @@ public class Controller implements Initializable {
     Populate the list view
      */
     @FXML
-    public void submitMachineButton(){
+    public void submitMachineButton() {
 
         //Check that all fields have been filled
-        if (serviceTagTextField.getText() == null || machineIssueComboBox.getSelectionModel().getSelectedItem() == null){
+        if (serviceTagTextField.getText() == null || machineIssueComboBox.getSelectionModel().getSelectedItem() == null) {
             alertLabel.setVisible(true);
-        } else if (serviceTagTextField.getText().length() != 7){
+        } else if (serviceTagTextField.getText().length() != 7) {
             alertLabel.setText("* The Service Tag must be 7 characters long");
         } else if (machineIssueComboBox.getSelectionModel().getSelectedItem().equals("Battery Swollen") ||
                 machineIssueComboBox.getSelectionModel().getSelectedItem().equals("Battery Not Charging / Holding Charge")
-                        && batterySerialNumberTextField.getText() == null){
+                        && batterySerialNumberTextField.getText() == null) {
             alertLabel.setText("* Please complete all required fields");
         } else {
             alertLabel.setVisible(false);
@@ -110,7 +110,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void onServiceTagInputEnter(){
+    public void onServiceTagInputEnter() {
         machineIssueComboBox.requestFocus();
     }
 
@@ -123,7 +123,7 @@ public class Controller implements Initializable {
 
     }
 
-    
+
     /*
     If the issue selected requires a battery:
     Set the battery serial number label and text field visible and enables
@@ -146,8 +146,11 @@ public class Controller implements Initializable {
 
     /*
     Get the status of the last 100 machines in the dispatch summary and display in status table
+    Runs every time the main UI is reloaded, run in intervals? Save Observable list and repopulate when main UI is loaded?
+    Set target page to dispatch list to save time, it will redirect to main to login, then go directly to dispatch list
+    This can also work for first login of warranties, go directly to dreate dispatch page
      */
-    public void populateStatusTable(){
+    public void populateStatusTable() {
         //Create WebDriver object
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\jsmit\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
@@ -187,9 +190,9 @@ public class Controller implements Initializable {
         //Create status entries for first page of dispatch summary
         for (int i = 0; i < 100; i++) {
             String status = driver.findElement(By.cssSelector("#_ctl0_BodyContent__ctl0_lvgA9578C48_adg_dgiRow" + i + " > td:nth-child(3)")).getText();
-            if (status.toLowerCase().equals("under review") || status.toLowerCase().equals("unable to process") || status.toLowerCase().equals("service complete")){
+            if (status.toLowerCase().equals("under review") || status.toLowerCase().equals("unable to process") || status.toLowerCase().equals("service complete")) {
                 StatusEntry entry = new StatusEntry(
-                driver.findElement(By.cssSelector("#_ctl0_BodyContent__ctl0_lvgA9578C48_adg_dgiRow" + i + " > td:nth-child(4)")).getText(), status);
+                        driver.findElement(By.cssSelector("#_ctl0_BodyContent__ctl0_lvgA9578C48_adg_dgiRow" + i + " > td:nth-child(4)")).getText(), status);
                 tempStatusData.add(entry);
             }
         }
@@ -240,19 +243,18 @@ public class Controller implements Initializable {
          */
 
 
-
         //Populate table
         statusTable.setItems(statusData);
 
     }
 
-    
+
     /*
     Retrieve the Warranty machine table information from the database
     Use the information to populate the list view
      */
-    public void populateListView(){
-        
+    public void populateListView() {
+
         //Get database connection
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
@@ -262,12 +264,12 @@ public class Controller implements Initializable {
 
         //Populate object list from database
         ArrayList<WarrantyMachine> listViewMachineList = new ArrayList<>();
-        for (int i = 0; i < database.getRowCount("WarrantyMachines"); i++){
-            WarrantyMachine machine = new WarrantyMachine (database.getCellValue("Service_Tag", "WarrantyMachines", i),
-                                    database.getCellValue("Machine_Issue", "WarrantyMachines", i),
-                                            database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i),
-                                            database.getCellValue("Part_Needed", "WarrantyMachines", i),
-                                            database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i));
+        for (int i = 0; i < database.getRowCount("WarrantyMachines"); i++) {
+            WarrantyMachine machine = new WarrantyMachine(database.getCellValue("Service_Tag", "WarrantyMachines", i),
+                    database.getCellValue("Machine_Issue", "WarrantyMachines", i),
+                    database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i),
+                    database.getCellValue("Part_Needed", "WarrantyMachines", i),
+                    database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i));
             listViewMachineList.add(machine);
         }
 
@@ -299,7 +301,7 @@ public class Controller implements Initializable {
     Remove selected items from list view
     Remove selected items form the warranty machine table in database
      */
-    public void removeFromListView(){
+    public void removeFromListView() {
 
         //Get database connection
         DatabaseHelper database = new DatabaseHelper();
@@ -323,12 +325,12 @@ public class Controller implements Initializable {
         } else listViewCountLabel.setText("");
         database.closeConnection();
     }
-    
+
     /*
     Get the machine issues from Description table
     Populate machine issue combo box
      */
-    public void populateMachineIssueComboBox(){
+    public void populateMachineIssueComboBox() {
         //Get database connection
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
@@ -348,7 +350,7 @@ public class Controller implements Initializable {
     /*
     Write warranty machines to the warranty machine table
      */
-    public void writeWarrantyMachineTable(){
+    public void writeWarrantyMachineTable() {
 
         //Create Warranty Machine object
         WarrantyMachine warrantyMachine;
@@ -384,7 +386,7 @@ public class Controller implements Initializable {
 
         database.closeConnection();
     }
-    
+
     /*
     Using selenium, perform the warranty process and log the information to the database
      */
@@ -473,8 +475,8 @@ public class Controller implements Initializable {
             }
 
             //Click warranty in the past 30 days modal box if present
-            if (checkIfExistsByXpath(driver ,"//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")){
-                if (driver.findElement(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")).isDisplayed()){
+            if (checkIfExistsByXpath(driver, "//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")) {
+                if (driver.findElement(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")).isDisplayed()) {
                     driver.findElement(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")).click();
                 }
             }
@@ -535,7 +537,7 @@ public class Controller implements Initializable {
                         ExpectedConditions.presenceOfElementLocated(By.id("_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchParts_lvg9BB97555_adg_dgiRow1__scSelect")));
                 partListSecondCheckbox.click();
 
-            // Else select first checkbox
+                // Else select first checkbox
             } else {
                 Thread.sleep(3000);
                 WebElement partListFirstCheckbox = new WebDriverWait(driver, 30).until(
@@ -544,16 +546,15 @@ public class Controller implements Initializable {
             }
 
             //Check if part is battery
-            if (warrantyMachine.partNeeded.equals("Battery, Removable")){
+            if (warrantyMachine.partNeeded.equals("Battery, Removable")) {
                 //Check if swollen
-                if (warrantyMachine.machineIssue.equals("Battery Swollen")){
+                if (warrantyMachine.machineIssue.equals("Battery Swollen")) {
                     //Check yes
                     WebElement batterySwollenYes = new WebDriverWait(driver, 30).until(
                             ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchParts_rbBatteryDamagedYes\"]")));
                     Thread.sleep(3000);
                     batterySwollenYes.click();
                     //******This ^ clickInterceptedException ******
-
 
 
                 } else {
@@ -572,7 +573,7 @@ public class Controller implements Initializable {
 
                 //Enter battery serial number if part is battery
                 //Check if model is 5530, serial input has a different id
-                if (machineModel.toLowerCase().equals("precision 5530")){
+                if (machineModel.toLowerCase().equals("precision 5530")) {
                     WebElement batterySerialInput5530 = new WebDriverWait(driver, 30).until(
                             ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchParts_btnBatteryDamagedSubmit")));
                     batterySerialInput5530.sendKeys(warrantyMachine.batterySerialNumber);
@@ -584,13 +585,13 @@ public class Controller implements Initializable {
             }
 
             //Click Next
-            nextPageButton = new WebDriverWait(driver, 30). until(
+            nextPageButton = new WebDriverWait(driver, 30).until(
                     ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_btnNextElement")));
             nextPageButton.click();
 
             //Check for flea power motherboard alert/ePSA alert'
             Thread.sleep(2000);
-            if (checkIfExistsByXpath(driver, "//*[@id=\"btn1\"]")){
+            if (checkIfExistsByXpath(driver, "//*[@id=\"btn1\"]")) {
                 driver.findElement(By.xpath("//*[@id=\"btn1\"]")).click();
             }
 
@@ -604,13 +605,13 @@ public class Controller implements Initializable {
                     ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCongratulations\"]")));
             String requestNumberRaw = requestNumberText.getText();
 
-            writeToLogSheet(warrantyMachine, machineModel,  requestNumberRaw);
+            writeToLogSheet(warrantyMachine, machineModel, requestNumberRaw);
 
             //Submit Warranty
             WebElement createNewDispatch = new WebDriverWait(driver, 30).until(
                     ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCreateAnother")));
             createNewDispatch.click();
-            }
+        }
 
         //Delete table
         database.clearTable("WarrantyMachines");
@@ -620,140 +621,42 @@ public class Controller implements Initializable {
 
         //Close ChromeDriver
         driver.close();
-        }
-
-        public void writeToLogSheet(WarrantyMachine warrantyMachine, String machineModel, String requestNumberRaw){
-            DatabaseHelper database = new DatabaseHelper();
-            database.connect();
-
-            String[] tempRequestNumberArray = requestNumberRaw.split(" ");
-
-            //Create ArrayList and convert Array to ArrayList
-            List<String> requestNumberList;
-            requestNumberList = Arrays.asList(tempRequestNumberArray);
-
-            //Get request number from last ArrayList index
-            String requestNumber = requestNumberList.get(requestNumberList.size() - 1);
-
-            //Remove period from end of Request Number
-            requestNumber = requestNumber.substring(0, requestNumber.length() -1);
-
-            //Write Warranty Information to Log Sheet
-            database.addNewRowToLogSheet(requestNumber, warrantyMachine.serviceTag, machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
-            database.closeConnection();
-        }
-    /*
-    Check if a web element exists or not using it's xpath     
-     */
-    public boolean checkIfExistsByXpath(WebDriver driver, String xpath){
-        try {
-            driver.findElement(By.xpath(xpath));
-        } catch (org.openqa.selenium.NoSuchElementException e){
-            e.printStackTrace();
-            return false;
-        } return true;
     }
 
-    //Display the dialog when "Add New Machine Issue" is clicked in mainUI
-    public void showNewIssueDialog() throws IOException {
-
-        //Create dialog
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Add New Machine Issue");
-
-        //Get resource for loader and set dialog
-        FXMLLoader newIssueDialogLoader = new FXMLLoader(getClass().getResource("newIssueDialog.fxml"));
-        dialog.setDialogPane(newIssueDialogLoader.load());
-
-        //Get controller for dialog, add buttons and display dialog
-        NewIssueDialogController controller = newIssueDialogLoader.getController();
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        //Optional<ButtonType> dialogResult = dialog.showAndWait();
-        dialog.showAndWait();
-        populateMachineIssueComboBox();
-
-        /*
-        Prevent the user from entering null values **Causes NullPointerException but doesn't crash program**
-        Does not work if IF statement checking for null values below is removed
-         */
-        /*
-        Button dialogOK = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-        dialogOK.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-            if(controller.newMachineIssue.getText().isEmpty() ||
-                    controller.newTroubleshootingSteps.getText().isEmpty() ||
-                    controller.newPartNeededComboBox.getValue().isEmpty()){
-                actionEvent.consume();
-                controller.alertLabel.setText("Please fill in all required fields");
-            }
-        });
-
-        //Check for null values
-        if (controller.newMachineIssue.getText() != null &&
-                controller.newTroubleshootingSteps.getText() != null &&
-                controller.newPartNeededComboBox.getSelectionModel().getSelectedItem() != null) {
-
-            //If OK button is clicked, write to database
-            if (dialogResult.isPresent() && dialogResult.get() == ButtonType.OK) {
-                DatabaseHelper database = new DatabaseHelper();
-                database.connect();
-                database.addNewRowToDescriptionSheet(controller.newMachineIssue.getText(),
-                        controller.newTroubleshootingSteps.getText(), controller.newPartNeededComboBox.getValue());
-                database.closeConnection();
-
-                //Update machine issue combobox
-                populateMachineIssueComboBox();
-            }
-        }
-
-         */
-    }
-
-    public void showLoginDialog(){
-        try {
-            Stage stage = new Stage();
-            GridPane root = FXMLLoader.load(getClass().getResource("loginDialog.fxml"));
-            Scene scene = new Scene(root, 300, 100);
-            stage.titleProperty();
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (NullPointerException | IOException e){
-            e.printStackTrace();
-        }
-    }
-
-}
-
-    /*
-    ** Works but the waranty machine table is written using indexes, not values so the issue written to the table is incorrect
-
-    public void machineIssueComboBoxSearch(){
-        String searchCriteria = machineIssueComboBox.getEditor().getText().toLowerCase();
-        //Get database connection
+    public void writeToLogSheet(WarrantyMachine warrantyMachine, String machineModel, String requestNumberRaw) {
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
-        //Create lists from description sheet
-        ArrayList<String> machineIssueList = database.createListFromColumn("Machine_Issue", "DescriptionSheet");
-        ArrayList<String> filteredMachineIssueList = new ArrayList<>();
+        String[] tempRequestNumberArray = requestNumberRaw.split(" ");
 
-        for (String machineIssue : machineIssueList) {
-            if (machineIssue.toLowerCase().contains(searchCriteria)) {
-                filteredMachineIssueList.add(machineIssue);
-            }
-        }
-        System.out.println(filteredMachineIssueList);
-        //Sort the machine issues
-        Collections.sort(filteredMachineIssueList);
+        //Create ArrayList and convert Array to ArrayList
+        List<String> requestNumberList;
+        requestNumberList = Arrays.asList(tempRequestNumberArray);
 
-        //Populate Machine Issue Combo Box
-        ObservableList<String> machineIssueComboList = FXCollections.observableList(filteredMachineIssueList);
-        machineIssueComboBox.setItems(machineIssueComboList);
+        //Get request number from last ArrayList index
+        String requestNumber = requestNumberList.get(requestNumberList.size() - 1);
 
-        machineIssueComboBox.show();
+        //Remove period from end of Request Number
+        requestNumber = requestNumber.substring(0, requestNumber.length() - 1);
 
-        //Close database connection
-        database.closeConnection();;
+        //Write Warranty Information to Log Sheet
+        database.addNewRowToLogSheet(requestNumber, warrantyMachine.serviceTag, machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
+        database.closeConnection();
     }
 
+    /*
+    Check if a web element exists or not using it's xpath     
      */
+    public boolean checkIfExistsByXpath(WebDriver driver, String xpath) {
+        try {
+            driver.findElement(By.xpath(xpath));
+        } catch (org.openqa.selenium.NoSuchElementException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+}
+
+
 
