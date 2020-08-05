@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
-<DialogPane xmlns="http://javafx.com/javafx"
+<GridPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="JosephSmith.NewIssueDialogController"
-            prefHeight="300.0" prefWidth="600.0">
-    <content>
-        <GridPane hgap ="5" vgap="5">
+            prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" bottom="20" left="20" right="20"/>
+            </padding>
+
+            <rowConstraints>
+                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="50"/>
+                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="10"/>
+            </rowConstraints>
             <Label text="Add New Issue" GridPane.columnIndex="0" GridPane.rowIndex="0"
-            GridPane.columnSpan="2">
+            GridPane.columnSpan="2" GridPane.halignment="CENTER">
                 <font>
                     <Font size="24"/>
                 </font>
@@ -30,7 +37,7 @@
             <TextArea fx:id="newTroubleshootingSteps" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" wrapText="true"/>
             <ComboBox fx:id="newPartNeededComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS" onAction="#partComboBoxChange"/>
             <TextField fx:id="addNewPartInput" GridPane.columnIndex="1" GridPane.rowIndex="4" visible="false" disable="true" GridPane.hgrow="ALWAYS"/>
-            <Button fx:id="addNewMachineIssueButton" text="Add Issue" GridPane.rowIndex="5" GridPane.columnIndex="0" onAction="#addNewMachineIssue"/>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" alignment="BOTTOM_RIGHT">
+                <Button fx:id="addNewMachineIssueButton" text="Add Issue" onAction="#addNewMachineIssue"/>
+            </HBox>
         </GridPane>
-    </content>
-</DialogPane>

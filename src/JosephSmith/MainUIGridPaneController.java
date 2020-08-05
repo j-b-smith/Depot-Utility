@@ -3,63 +3,37 @@ package JosephSmith;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class Controller implements Initializable {
+public class MainUIGridPaneController implements Initializable {
     public Button submitMachineButton;
     public Button initiateWarranty;
     @FXML
-    public Button viewLog;
     public ComboBox<String> machineIssueComboBox;
     public TextField serviceTagTextField;
-    public Button newMachineIssueButton;
     public TextField batterySerialNumberTextField;
     public Label batterySerialNumberLabel;
     public ListView<WarrantyMachine> warrantyMachineListView;
     public Button removeListViewItem;
     public Label listViewCountLabel;
     public Label alertLabel;
-    public TableView<StatusEntry> statusTable;
     public TableColumn<Object, Object> serviceTag;
-    public TableColumn<Object, Object> status;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateMachineIssueComboBox();
-        Thread statusThread = new Thread(this::populateStatusTable);
-        statusThread.start();
-
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
         database.clearTable("WarrantyMachines");
-    }
-
-    @FXML
-    private void displayLog() throws IOException {
-        try {
-            Stage stage = (Stage) viewLog.getScene().getWindow();
-            GridPane root = FXMLLoader.load(getClass().getResource("logSheetUI.fxml"));
-            Scene scene = new Scene(root, 1200, 700);
-            stage.setScene(scene);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
     }
 
     /*
@@ -123,7 +97,6 @@ public class Controller implements Initializable {
 
     }
 
-
     /*
     If the issue selected requires a battery:
     Set the battery serial number label and text field visible and enables
@@ -143,111 +116,6 @@ public class Controller implements Initializable {
             }
         }
     }
-
-    /*
-    Get the status of the last 100 machines in the dispatch summary and display in status table
-    Runs every time the main UI is reloaded, run in intervals? Save Observable list and repopulate when main UI is loaded?
-    Set target page to dispatch list to save time, it will redirect to main to login, then go directly to dispatch list
-    This can also work for first login of warranties, go directly to dreate dispatch page
-     */
-    public void populateStatusTable() {
-        //Create WebDriver object
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\jsmit\\chromedriver.exe");
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless", "--disable-gpu");
-        WebDriver driver = new ChromeDriver(options);
-
-
-        // Navigate to Dell Tech Direct Website
-        driver.get("https://www.dell.com/Identity/global/Login/\\\n" +
-                "\t\t7b0aec96-623a-4393-b6d0-a595d7d897ef?Ctx=bXAR5%2FJWR\\\n" +
-                "\t\tYQAwJHNtR9DwN92sZVPfDGk%2BXHHHAdnENeURzRs12i%2FKkH46J\\\n" +
-                "\t\tTWGwRs&feir=1");
-
-        //Input Email Address and Password
-        driver.findElement(By.id("EmailAddress")).sendKeys("rv355@cummins.com");
-        driver.findElement(By.id("Password")).sendKeys("Kayla0626!$");
-
-        //Sign in
-        WebElement signIn = new WebDriverWait(driver, 30).until(
-                ExpectedConditions.elementToBeClickable(By.id("sign-in-button")));
-        signIn.click();
-
-        //Navigate to Self-Dispatch page
-        WebElement selfDispatch = new WebDriverWait(driver, 30).until(
-                ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent__ctl2__ctl0_btnVisit")));
-        selfDispatch.click();
-
-        //Navigate to dispatch summary
-        //Navigate to Self-Dispatch page
-        WebElement dispatchSummary = new WebDriverWait(driver, 30).until(
-                ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_common_boxes_rptBoxes__ctl0_btnBox")));
-        dispatchSummary.click();
-
-        //Store status entries in list
-        ArrayList<StatusEntry> tempStatusData = new ArrayList<>();
-
-        //Create status entries for first page of dispatch summary
-        for (int i = 0; i < 100; i++) {
-            String status = driver.findElement(By.cssSelector("#_ctl0_BodyContent__ctl0_lvgA9578C48_adg_dgiRow" + i + " > td:nth-child(3)")).getText();
-            if (status.toLowerCase().equals("under review") || status.toLowerCase().equals("unable to process") || status.toLowerCase().equals("service complete")) {
-                StatusEntry entry = new StatusEntry(
-                        driver.findElement(By.cssSelector("#_ctl0_BodyContent__ctl0_lvgA9578C48_adg_dgiRow" + i + " > td:nth-child(4)")).getText(), status);
-                tempStatusData.add(entry);
-            }
-        }
-
-        //Close chromedriver
-        driver.close();
-
-        //Convert data to observable list
-        ObservableList<StatusEntry> statusData = FXCollections.observableArrayList(tempStatusData);
-
-
-        //Create cell factories for table
-        serviceTag.setCellValueFactory(
-                new PropertyValueFactory<>("serviceTag"));
-        status.setCellValueFactory(
-                new PropertyValueFactory<>("status")
-        );
-
-        /*
-        Make row red if status == "unable to process"????
-
-        serviceTag.setCellFactory(objectObjectTableColumn -> new TableCell<>(){
-            @Override
-            protected void updateItem(Object item, boolean empty) {
-                super.updateItem(item, empty);
-
-                TableRow<Object> currentRow = getTableRow();
-                System.out.println(currentRow);
-
-                if (item.equals("Unable to Process")){
-                    currentRow.setStyle("-fx-background-color: red");
-                }
-            }
-        });
-
-        status.setCellFactory(objectObjectTableColumn -> new TableCell<>(){
-            @Override
-            protected void updateItem(Object item, boolean empty) {
-                super.updateItem(item, empty);
-
-                TableRow<Object> currentRow = getTableRow();
-
-                if (item.equals("Unable to Process")){
-                    currentRow.setStyle("-fx-background-color: red");
-                }
-            }
-        });
-         */
-
-
-        //Populate table
-        statusTable.setItems(statusData);
-
-    }
-
 
     /*
     Retrieve the Warranty machine table information from the database
@@ -658,5 +526,20 @@ public class Controller implements Initializable {
     }
 }
 
+
+/*
+Switch windows on button click
+    @FXML
+    private void displayLog() throws IOException {
+        try {
+            Stage stage = (Stage) viewLog.getScene().getWindow();
+            GridPane root = FXMLLoader.load(getClass().getResource("logSheetUI.fxml"));
+            Scene scene = new Scene(root, 1200, 700);
+            stage.setScene(scene);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+ */
 
 
