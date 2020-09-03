@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="JosephSmith.ServiceNowController"
+          prefHeight="400.0" prefWidth="600.0" vgap="10" hgap="10" gridLinesVisible="true">
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="20"/>
+        <ColumnConstraints percentWidth="80"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints percentHeight="95"/>
+        <RowConstraints percentHeight="5"/>
+    </rowConstraints>
+
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
+        <Label text="SCTASK: " style="-fx-font-weight: bold;"/>
+        <TextField fx:id="taskNumber" onKeyPressed="#onTaskKeyEnter"/>
+        <Label text="Tracking Number: " style="-fx-font-weight: bold;"/>
+        <TextField fx:id="trackingNumber"/>
+        <Label text="Work Notes: " style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="workNotes" wrapText="true"/>
+
+        <Button text="Add Task" onAction="#addToQueue"/>
+
+        <Label text="User Information" alignment="CENTER" style="-fx-font-weight: bold;"/>
+        <Label text='"Assign To" Name: ' wrapText="true" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="techNameComboBox"/>
+        <Label text="WWID: " wrapText="true" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="userWWID"/>
+        <Label text="Password: " style="-fx-font-weight: bold;"/>
+        <PasswordField fx:id="techPassword"/>
+    </VBox>
+
+    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10" >
+        <Label text="Task Queue" style="-fx-font-weight: bold;"/>
+        <TableView fx:id="scTaskTable" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <Label text="No Tasks In Queue"/>
+            </placeholder>
+            <columns>
+                <TableColumn fx:id="sctaskNumColumn" text="SCTASK"/>
+                <TableColumn fx:id="sctaskTrackingColumn" text="Tracking Number" />
+                <TableColumn fx:id="sctaskNotesColumn" text="Work Notes" />
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <Button text="Remove Selected Task" onAction="#removeTask"/>
+
+        <!--<Button text="FedEx" onAction="#initiateFedexLabels"/>-->
+    </VBox>
+    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
+        <Button text="Complete Tasks" onAction="#completeTasks"/>
+    </HBox>
+
+</GridPane>

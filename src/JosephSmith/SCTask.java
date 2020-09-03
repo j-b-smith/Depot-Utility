@@ -2,24 +2,25 @@ package JosephSmith;
 
 public class SCTask {
     String taskNumber;
-    String customerName;
-    String taskNotes;
+    String workNotes;
+    String trackingNumber;
 
-    public SCTask(String taskNumber, String customerName, String taskNotes){
+    public SCTask(String taskNumber, String trackingNumber, String workNotes){
         this.taskNumber = taskNumber;
-        this.customerName = customerName;
-        this.taskNotes = taskNotes;
+        this.workNotes = workNotes;
+        this.trackingNumber = trackingNumber;
     }
 
     public String getTaskNumber() {
         return taskNumber;
     }
 
-    public String getCustomerName() {
-        return customerName;
+
+    public String getWorkNotes() {
+        return workNotes;
     }
 
-    public String getTaskNotes() {
-        return taskNotes;
+    public String getTrackingNumber() {
+        return trackingNumber;
     }
 }

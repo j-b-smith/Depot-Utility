@@ -6,26 +6,31 @@ public class WarrantyMachine {
     String machineIssue;
     String troubleshootingSteps;
     String partNeeded;
-    String batterySerialNumber;
+    String serialNumber;
+    String partDescription;
 
     public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded){
         this.serviceTag = serviceTag.toUpperCase();
         this.machineIssue = machineIssue;
         this.troubleshootingSteps = troubleshootingSteps;
         this.partNeeded = partNeeded;
+
     }
 
-    public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded, String batterySerialNumber){
-        this.serviceTag = serviceTag;
+    public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded, String serialNumber){
+        this.serviceTag = serviceTag.toUpperCase();
         this.machineIssue = machineIssue;
         this.troubleshootingSteps = troubleshootingSteps;
         this.partNeeded = partNeeded;
-        this.batterySerialNumber = batterySerialNumber;
+        this.serialNumber = serialNumber;
+
+
     }
 
+
     public String toString() {
-        if (this.batterySerialNumber != null) {
-            return this.serviceTag + " | " + this.machineIssue + " | " + this.troubleshootingSteps + " | " + this.partNeeded + " | " + this.batterySerialNumber;
+        if (this.serialNumber != null) {
+            return this.serviceTag + " | " + this.machineIssue + " | " + this.troubleshootingSteps + " | " + this.partNeeded + " | " + this.serialNumber;
         } else
             return this.serviceTag + " | " + this.machineIssue + " | " + this.troubleshootingSteps + " | " + this.partNeeded;
     }

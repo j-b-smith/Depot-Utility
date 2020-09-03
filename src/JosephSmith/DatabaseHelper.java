@@ -21,6 +21,7 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
     }
+    
 
     //Close database connection
     public void closeConnection(){
@@ -72,6 +73,7 @@ public class DatabaseHelper {
     Get cell value by index
      */
     public String getCellValue(String columnName, String tableName, int index) {
+
         //Increment index for database use
         index +=1;
         String value = null;
@@ -89,6 +91,22 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
         return value;
+    }
+
+    /*
+    Resets the indexes of a given table to the count of the row +1
+    Allows for iteration through rowid after adding and removing rows
+     */
+    public void reIndexTable(String tableName){
+        try(Statement statement = connection.createStatement()){
+            statement.executeUpdate("UPDATE " + tableName + " SET ROWID = (\n" +
+                    "  SELECT COUNT(*)+1\n" +
+                    "  FROM " + tableName +  " w\n" +
+                    "  WHERE " + tableName + ".ROWID>w.ROWID\n" +
+                    ");");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -160,12 +178,12 @@ public class DatabaseHelper {
         }
     }
 
-    public void addNewRowToWarrantyMachinesBattery(WarrantyMachine machine) {
+    public void addNewRowToWarrantyMachinesSerial(WarrantyMachine machine) {
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Battery_Serial_Number) " +
                     "VALUES ('" + machine.serviceTag + "' , '" + machine.machineIssue + "' , '"
-                    + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' , '" + machine.batterySerialNumber + "');");
+                    + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' , '" + machine.serialNumber + "');");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -230,6 +248,39 @@ public class DatabaseHelper {
             }
         }
     }
+
+    public void removeRowFromWarrantyMachines(WarrantyMachine machine){
+
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM WarrantyMachines WHERE (Service_Tag ='" + machine.serviceTag + "' AND Machine_Issue ='"
+                    + machine.machineIssue + "' AND Part_Needed ='" + machine.partNeeded + "');");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public String getPartDescription(String model, String part){
+       model = model.replace(" ", "_");
+       model = model.replace("-", "_");
+
+       String value = null;
+
+        try (Statement statement = connection.createStatement()){
+            //Get Result set
+            ResultSet queryResult = statement.
+                    executeQuery("SELECT " + model + " FROM PartDescriptions WHERE Part_Needed = '" + part + "';");
+            //Move cursor to first position
+            queryResult.next();
+
+            value = queryResult.getString(model);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
 
     /*
     Create lists from tables

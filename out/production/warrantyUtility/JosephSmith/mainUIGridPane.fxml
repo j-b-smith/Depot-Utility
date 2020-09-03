@@ -12,17 +12,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.CheckBox?>
 <TabPane fx:controller="JosephSmith.MainUIGridPaneController"
-         xmlns:fx="http://javafx.com/fxml" side="LEFT">
-    <Tab text="Warranty Form" closable="false">
+         xmlns:fx="http://javafx.com/fxml" side="LEFT" >
+    <Tab text="Warranty Form" closable="false" style="-fx-font-weight: bold;">
         <GridPane vgap="10" hgap="10">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
             <columnConstraints>
-                <ColumnConstraints percentWidth="80"/>
-                <ColumnConstraints percentWidth="20"/>
+                <ColumnConstraints percentWidth="38"/>
+                <ColumnConstraints percentWidth="38"/>
+                <ColumnConstraints percentWidth="24"/>
             </columnConstraints>
 
             <rowConstraints>
@@ -34,38 +36,41 @@
 
 
             <Label text="Warranty Machine Form" GridPane.columnIndex="0"
-                   GridPane.rowIndex="0" GridPane.columnSpan="2"
-                   GridPane.rowSpan="1" GridPane.halignment="CENTER" GridPane.valignment="BASELINE">
+                   GridPane.rowIndex="0" GridPane.columnSpan="3"
+                   GridPane.rowSpan="1" GridPane.halignment="CENTER" GridPane.valignment="BASELINE" style="-fx-font-weight: bold;">
                 <font>
                     <Font name="Arial" size="24"/>
                 </font>
             </Label>
 
-            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
-                <Label text="Enter Service Tag: " GridPane.columnIndex="1"
-                       GridPane.rowIndex="1" GridPane.valignment="BASELINE" GridPane.halignment="RIGHT"/>
-                <TextField fx:id="serviceTagTextField" GridPane.columnIndex="2" GridPane.rowIndex="1"
-                           GridPane.hgrow="ALWAYS"
-                           GridPane.valignment="BASELINE" onAction="#onServiceTagInputEnter"/>
+            <VBox GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS" spacing="10">
+                <Label text="Enter Service Tag: " style="-fx-font-weight: bold;"/>
+                <TextField fx:id="serviceTagTextField" onAction="#onServiceTagInputEnter"/>
 
-                <Label text="Select Machine Issue" GridPane.columnIndex="1"
-                       GridPane.rowIndex="2" GridPane.valignment="BASELINE" GridPane.halignment="RIGHT"/>
-                <ComboBox fx:id="machineIssueComboBox" GridPane.columnIndex="2" GridPane.rowIndex="2"
-                          GridPane.hgrow="ALWAYS"
-                          GridPane.valignment="BASELINE" onKeyPressed="#onComboKeyEnter"
-                          onAction="#onComboBoxChange"/> <!--editable="true"-->
+                <Label text="Select Machine Issue" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="machineIssueComboBox" onKeyPressed="#onComboKeyEnter" onAction="#onComboBoxChange"/>
 
-                <Label fx:id="batterySerialNumberLabel" text="Battery Serial Number" GridPane.columnIndex="1"
-                       GridPane.rowIndex="3" GridPane.valignment="BASELINE" GridPane.halignment="RIGHT"
-                       visible="false"/>
-                <TextField fx:id="batterySerialNumberTextField" GridPane.columnIndex="2" GridPane.rowIndex="3"
-                           GridPane.valignment="BASELINE" GridPane.hgrow="ALWAYS" visible="false" disable="true"/>
-                <Label fx:id="alertLabel" text="* Please complete all required fields" textFill="red" visible="false"
-                       GridPane.columnIndex="1"
-                       GridPane.rowIndex="1" GridPane.valignment="BASELINE" GridPane.halignment="LEFT"/>
+                <HBox spacing="10">
+                    <Label text="Check This Box For Multiple Issues:" style="-fx-font-weight: bold;"/>
+                    <CheckBox fx:id="multipleIssuesCheckbox"/> <!--onAction="#onCheckboxChange"/>-->
+                </HBox>
+
+                <Label fx:id="serialNumberLabel" text="Serial Number" visible="false" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="serialNumberTextField" visible="false" disable="true"/>
+
+
+
+                <HBox spacing="20">
+                <Label fx:id="multipleIssueLabel" text="Issues:" visible="false" style="-fx-font-weight: bold;"/>
+                    <Button fx:id="multipleIssueButton" text="Add Issue" visible="false" disable="true"/> <!--onAction="#addIssueToMachine"/>-->
+                </HBox>
+                <ListView fx:id="multipleIssueListView" visible="false"/>
             </VBox>
+            <Button fx:id="submitMachineButton" text="Submit Machine"
+                    onAction="#submitMachineButton" GridPane.columnIndex="2"
+                    GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.halignment="RIGHT"/>
 
-            <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" spacing="20">
+            <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
                 <Button fx:id="removeListViewItem" text="Remove Selected Items" HBox.hgrow="ALWAYS"
                         onAction="#removeFromListView" alignment="BOTTOM_LEFT"/>
                 <Label fx:id="listViewCountLabel" style="fx-font-weight: bold;" alignment="BOTTOM_LEFT">
@@ -73,42 +78,39 @@
                         <Font size="16"/>
                     </font>
                 </Label>
+
+            </HBox>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
+                <Label fx:id="alertLabel" visible="false" textFill="red" style="-fx-font-weight: bold;" wrapText="true"/>
             </HBox>
 
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
-                <Button fx:id="submitMachineButton" text="Submit Machine" HBox.hgrow="ALWAYS"
-                        onAction="#submitMachineButton"/>
-            </HBox>
 
-            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
+
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
                   spacing="20">
                 <ListView fx:id="warrantyMachineListView">
                     <placeholder>
-                        <Label text="No Machines In Current Batch"/>
+                        <Label text="No Machines In Current Batch" style="-fx-font-weight: bold;"/>
                     </placeholder>
                 </ListView>
             </VBox>
-
-
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="2" spacing="10"
-                  alignment="BOTTOM_RIGHT">
-                <Button fx:id="initiateWarranty" text="Initiate Warranty" HBox.hgrow="ALWAYS"
-                        onAction="#initiateWarrantyButton"/>
-            </HBox>
+            <Button fx:id="initiateWarranty" text="Initiate Warranty" HBox.hgrow="ALWAYS"
+                    onAction="#initiateWarrantyButton" GridPane.columnIndex="1"
+                    GridPane.rowIndex="3" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM"/>
         </GridPane>
     </Tab>
 
-    <Tab text="Add New Issue" closable="false">
+    <Tab text="Add New Issue" closable="false" style="-fx-font-weight: bold;">
         <fx:include source="newIssueDialog.fxml"/>
     </Tab>
 
-    <Tab text="History" closable="false">
+    <Tab text="History" closable="false" style="-fx-font-weight: bold;">
         <TabPane>
-            <Tab text="Log Information" closable="false">
+            <Tab text="Log Information" closable="false" style="-fx-font-weight: bold;">
                 <fx:include source="logSheetUI.fxml"/>
             </Tab>
 
-            <Tab text="Pie Chart" closable="false">
+            <Tab text="Pie Chart" closable="false" style="-fx-font-weight: bold;">
                 <fx:include source="logPieChart.fxml"/>
             </Tab>
         </TabPane>
