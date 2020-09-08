@@ -8,10 +8,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -31,22 +33,22 @@ public class MainUIGridPaneController implements Initializable {
     public TextField serviceTagTextField;
     public TextField serialNumberTextField;
     public Label serialNumberLabel;
-    public ListView<WarrantyMachine> warrantyMachineListView;
     public Button removeListViewItem;
     public Label listViewCountLabel;
     public Label alertLabel;
-    public TableColumn<Object, Object> serviceTag;
-    public CheckBox multipleIssuesCheckbox;
-    public Label multipleIssueLabel;
-    public ListView<String> multipleIssueListView;
-    public Button multipleIssueButton;
-
+    public TableView<WarrantyMachine> warrantyMachineTableView;
+    public TableColumn<Object, Object> serviceTagColumn;
+    public TableColumn<Object, Object> machineIssueColumn;
+    public TableColumn<Object, Object> troubleshootingStepsColumn;
+    public TableColumn<Object, Object> partNeededColumn;
+    public TableColumn<Object, Object> serialNumberColumn;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateMachineIssueComboBox();
         populateMachineListView();
+        warrantyMachineTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     /*
@@ -55,9 +57,11 @@ public class MainUIGridPaneController implements Initializable {
      */
     public void initiateWarrantyButton() throws IOException, InterruptedException {
         openLoginDialog();
-
     }
 
+    /*
+    Create and display login dialog
+     */
     public void openLoginDialog() throws IOException, InterruptedException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("loginDialog.fxml"));
         Parent root = (Parent) loader.load();
@@ -101,12 +105,13 @@ public class MainUIGridPaneController implements Initializable {
 
 
 
-
+    //Set focus to combo box when enter is pressed on service tag field
     @FXML
     public void onServiceTagInputEnter() {
         machineIssueComboBox.requestFocus();
     }
 
+    //Set focus to submit machine button when enter is pressed on combo box
     @FXML
     public void onComboKeyEnter(javafx.scene.input.KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER)) {
@@ -147,22 +152,8 @@ public class MainUIGridPaneController implements Initializable {
         //reindex warranty machine table
         database.reIndexTable("WarrantyMachines");
 
-        //Allow multiple selections by user with CTRL+Click
-        warrantyMachineListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        //Populate object list from database
-        ArrayList<WarrantyMachine> listViewMachineList = new ArrayList<>();
-        for (int i = 0; i < database.getRowCount("WarrantyMachines"); i++) {
-            WarrantyMachine machine = new WarrantyMachine(database.getCellValue("Service_Tag", "WarrantyMachines", i
-
-
-            ),
-                    database.getCellValue("Machine_Issue", "WarrantyMachines", i),
-                    database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i),
-                    database.getCellValue("Part_Needed", "WarrantyMachines", i),
-                    database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i));
-            listViewMachineList.add(machine);
-        }
+        //Get warranty machines from database
+        ArrayList<WarrantyMachine> listViewMachineList = database.getWarrantyMachines();
 
         //Convert object list to Observable list
         ObservableList<WarrantyMachine> warrantyMachineListViewData = FXCollections.observableArrayList(listViewMachineList);
@@ -174,20 +165,20 @@ public class MainUIGridPaneController implements Initializable {
             listViewCountLabel.setText("");
         }
 
-        //Set List View data and populate
-        warrantyMachineListView.setItems(warrantyMachineListViewData);
-        warrantyMachineListView.setCellFactory(param -> new ListCell<WarrantyMachine>() {
-            @Override
-            protected void updateItem(WarrantyMachine item, boolean empty) {
-                super.updateItem(item, empty);
+        //Set cell factories for table
+        serviceTagColumn.setCellValueFactory(
+                new PropertyValueFactory<>("serviceTag"));
+        machineIssueColumn.setCellValueFactory(
+                new PropertyValueFactory<>("machineIssue"));
+        troubleshootingStepsColumn.setCellValueFactory(
+                new PropertyValueFactory<>("troubleshootingSteps"));
+        partNeededColumn.setCellValueFactory(
+                new PropertyValueFactory<>("partNeeded"));
+        serialNumberColumn.setCellValueFactory(
+                new PropertyValueFactory<>("serialNumber"));
 
-                if (empty || item == null || item.toString() == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                }
-            }
-        });
+        //Set List View data and populate
+        warrantyMachineTableView.setItems(warrantyMachineListViewData);
 
         database.closeConnection();
     }
@@ -204,15 +195,15 @@ public class MainUIGridPaneController implements Initializable {
 
         //Remove selected items from WarrantyMachines Table and List View
         ObservableList<WarrantyMachine> selectedWarrantyMachines, currentMachinesData;
-        selectedWarrantyMachines = warrantyMachineListView.getSelectionModel().getSelectedItems();
-        currentMachinesData = warrantyMachineListView.getItems();
+        selectedWarrantyMachines = warrantyMachineTableView.getSelectionModel().getSelectedItems();
+        currentMachinesData = warrantyMachineTableView.getItems();
 
         //Remove from warranty machine table
         database.removeRowsFromWarrantyMachines(selectedWarrantyMachines);
 
         //Update list view
         currentMachinesData.removeAll(selectedWarrantyMachines);
-        warrantyMachineListView.setItems(currentMachinesData);
+        warrantyMachineTableView.setItems(currentMachinesData);
 
         //Set machine quantity label
         if (currentMachinesData.size() > 0) {
@@ -233,7 +224,6 @@ public class MainUIGridPaneController implements Initializable {
         //Create lists from description sheet
         ArrayList<String> machineIssueList = database.createListFromColumn("Machine_Issue", "DescriptionSheet");
 
-
         //Populate Machine Issue Combo Box
         ObservableList<String> machineIssueComboList = FXCollections.observableList(machineIssueList);
         machineIssueComboBox.setItems(machineIssueComboList);
@@ -250,7 +240,6 @@ public class MainUIGridPaneController implements Initializable {
         //Create Warranty Machine object
         WarrantyMachine warrantyMachine;
 
-
         //Machine issue selection
         String machineIssueSelection = machineIssueComboBox.getSelectionModel().getSelectedItem();
 
@@ -258,25 +247,23 @@ public class MainUIGridPaneController implements Initializable {
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
-
-
         //Get values from description sheet based on machine issue selection value
         String machineIssue = database.getCellValue("Machine_Issue", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
         String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
         String partNeeded = database.getCellValue("Part_Needed", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
-
+        String serviceTag = serviceTagTextField.getText();
 
         //Check if part needed is a battery
         //Write machine object to database
         if (partNeeded.equals("Battery") || partNeeded.equals("Display, Monitor")) {
 
-            warrantyMachine = new WarrantyMachine(serviceTagTextField.getText(), machineIssue,
+            warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
                     troubleshootingSteps, partNeeded, serialNumberTextField.getText());
 
             database.addNewRowToWarrantyMachinesSerial(warrantyMachine);
         } else {
 
-            warrantyMachine = new WarrantyMachine(serviceTagTextField.getText(), machineIssue,
+            warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
                     troubleshootingSteps, partNeeded);
 
             database.addNewRowToWarrantyMachines(warrantyMachine);
@@ -288,13 +275,11 @@ public class MainUIGridPaneController implements Initializable {
     /*
     Using selenium, perform the warranty process and log the information to the database
      */
-    public void performWarranty(String techDirectEmail, String techDirectPass) throws InterruptedException {
-
+    public void performWarranty(String techDirectEmail, String techDirectPass) {
 
         //Create WebDriver object
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\jsmit\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
-
 
         // Navigate to Dell Tech Direct Website
         driver.get("https://www.dell.com/Identity/global/" +
@@ -315,38 +300,15 @@ public class MainUIGridPaneController implements Initializable {
                 ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_common_boxes_rptBoxes__ctl1_btnBox")));
         createDispatch.click();
 
-
         //Create database object and connect
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
-        //Get the number of warranty machines in the database
-        int rowCount = database.getRowCount("WarrantyMachines");
+        //Create list of warrantyMachine objects
+        ArrayList<WarrantyMachine> warrantyMachineList = database.getWarrantyMachines();
 
-        //Iterate through warranty machines
-        for (int i = 0; i < rowCount; i++) {
-
-            String serviceTag = database.getCellValue("Service_Tag", "WarrantyMachines", i);
-            String machineIssue = database.getCellValue("Machine_Issue", "WarrantyMachines", i);
-            String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i);
-            String partNeeded = database.getCellValue("Part_Needed", "WarrantyMachines", i);
-            String serialNumber = database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i);
-
-            //Create warranty machine object
-            WarrantyMachine warrantyMachine;
-
-            //Check if part needed is a battery
-            if (partNeeded.equals("Battery") || partNeeded.equals("Display, Monitor")) {
-
-                //Create warranty machine object with battery
-                warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                        troubleshootingSteps, partNeeded, serialNumber);
-            } else {
-
-                //Create warranty machine object without battery
-                warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                        troubleshootingSteps, partNeeded);
-            }
+        //Perform warranty process for each warranty machine
+        for (WarrantyMachine warrantyMachine : warrantyMachineList) {
 
             //Enter Service Tag
             WebElement enterServiceTag = new WebDriverWait(driver, 30).until(
@@ -358,9 +320,8 @@ public class MainUIGridPaneController implements Initializable {
                     ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_CreateDispL_lblbntValidate")));
             submitServiceTag.click();
 
-            //Check for alerts
-            if (checkIfExistsByXpath(driver, "//*[@id=\"_ctl0_BodyContent_CreateDispL_caError_lblAlertText\"]")) {
-
+            //Check for alert message (Out of Country machine, expired warranty status etc.)
+            try{
                 //Create variable to store alert message
                 String alertMessage = driver.findElement(By.xpath("//*[@id=\"_ctl0_BodyContent_CreateDispL_caError_lblAlertText\"]")).getText();
 
@@ -369,20 +330,22 @@ public class MainUIGridPaneController implements Initializable {
 
                 //Skip the iteration of this machine
                 continue;
+            } catch (NoSuchElementException e){
+                e.printStackTrace();
             }
 
-            //Click warranty in the past 30 days modal box if present
-            if (checkIfExistsByXpath(driver, "//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")) {
-                if (driver.findElement(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")).isDisplayed()) {
-                    driver.findElement(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")).click();
-                }
+            //Handle duplicate dispatch dialog if present
+            try{
+                WebElement duplicateDispatchButton = new WebDriverWait(driver, 5).until(
+                        ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"modalDuplicateDispatch\"]/div/div/div[3]/button")));
+                duplicateDispatchButton.click();
+            } catch (NoSuchElementException | TimeoutException | ElementNotInteractableException e){
+                e.printStackTrace();
             }
 
             // Get the model of the current machine and format it to have the first character capitalized
             String machineModel = driver.findElement(By.xpath("//*[@id=\"_ctl0_BodyContent_CreateDispL_rev_row_Model_divLabel\"]/span")).getText().toLowerCase();
             machineModel = machineModel.substring(0, 1).toUpperCase() + machineModel.substring(1);
-
-
 
             //Create work order for current machine
             WebElement createWorkOrder = new WebDriverWait(driver, 30).until(
@@ -418,74 +381,8 @@ public class MainUIGridPaneController implements Initializable {
                     ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_btnNextElement")));
             nextPageButton2.click();
 
-            //Switch to parts iFrame
-            WebElement partsIFrame = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.presenceOfElementLocated(By.id("iParts")));
-            driver.switchTo().frame(partsIFrame);
-            Thread.sleep(7000);
-
-            //Enter part needed in search box
-            WebElement partSearchField = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.presenceOfElementLocated(By.name("search")));
-            partSearchField.sendKeys(database.getPartDescription(machineModel, warrantyMachine.partNeeded));
-            partSearchField.sendKeys(Keys.RETURN);
-
-            //Wait for elements to load
-            Thread.sleep(4000);
-
-            //Get all input elements on page
-            List<WebElement> radioButtonList = driver.findElements(By.tagName("input"));
-            //Remove any elements that are not of type radio
-            radioButtonList.removeIf(input -> !input.getAttribute("type").equals("radio"));
-
-            //Get all checkbox elements on page
-            List<WebElement> checkboxList = driver.findElements(By.name("options"));
-
-            //Check if there are any radio buttons present on page
-            if (radioButtonList.size() != 0){
-                for (WebElement radioButton : radioButtonList) {
-                        //Check if radio button contains strong tag
-                        List<WebElement> strongTagList = driver.findElements(By.tagName("strong"));
-                        for (WebElement strongTag : strongTagList) {
-                            //Check if the text of the strong tag contains the part description
-                            if (strongTag.getText().contains(database.getPartDescription(machineModel, warrantyMachine.partNeeded))) {
-                                //Retrieve the id of the element that meets this criteria and select with the space key
-                                driver.findElement(By.id(radioButton.getAttribute("id"))).sendKeys(Keys.SPACE);
-                                //Check if the part needed is a battery
-                                if (warrantyMachine.partNeeded.equals("Battery") || warrantyMachine.partNeeded.equals("Display, Monitor")) {
-                                    //Get all input elements on the page
-                                    List<WebElement> inputList = driver.findElements(By.tagName("input"));
-                                    //Remove all elements that are not of type text and not of class form-control
-                                    inputList.removeIf(input -> !input.getAttribute("type").equals("text"));
-                                    inputList.removeIf(input -> !input.getAttribute("class").equals("form-control"));
-                                    for (WebElement input : inputList) {
-                                            //Input the serial number into the element that meets these criteria
-                                            input.sendKeys(warrantyMachine.serialNumber);
-                                    }
-                                }
-                            }
-
-                        }
-                    break;
-                }
-            //If no radio buttons are present
-            } else {
-                for (WebElement checkbox : checkboxList) {
-
-                        //Check if checkbox contains strong tag
-                        List<WebElement> strongTagList = driver.findElements(By.tagName("strong"));
-                        for (WebElement strongTag : strongTagList) {
-                            //Check if the text of the strong tag contains the part description
-                            String test = strongTag.getText();
-                            String description = database.getPartDescription(machineModel, warrantyMachine.partNeeded);
-                            if (strongTag.getText().contains(database.getPartDescription(machineModel, warrantyMachine.partNeeded))) {
-                                //Retrieve the id of the element that meets this criteria and select with the space key
-                                driver.findElement(By.id(checkbox.getAttribute("id"))).sendKeys(Keys.SPACE);
-                            }
-                        }
-                    break;
-                }
-            }
+            //Select part needed
+            selectMachinePart(driver, warrantyMachine, database, machineModel);
 
             //Switch from iFrame to default content
             driver.switchTo().defaultContent();
@@ -495,40 +392,24 @@ public class MainUIGridPaneController implements Initializable {
                     ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24__ctl4")));
             nextPageButton.click();
 
-            //Check for flea power motherboard alert/ePSA alert'
-            Thread.sleep(2000);
-            if (checkIfExistsByXpath(driver, "//*[@id=\"btn1\"]")) {
-                driver.findElement(By.xpath("//*[@id=\"btn1\"]")).click();
+            //Check for flea power dialog for motherboards
+            try{
+                WebElement motherboardConfirmButton = new WebDriverWait(driver, 5).until(
+                        ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"btn1\"]")));
+                motherboardConfirmButton.click();
+            } catch (NoSuchElementException | TimeoutException e){
+                e.printStackTrace();
             }
 
             //**FOR DEBUGGING PURPOSES**
             //cancelWarrantyRequest(driver);
 
-
-            //Submit Warranty
-            WebElement warrantySubmit = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_btnNextStatus_43B9DA4D39254CE19F028F1BF6942430\"]")));
-            warrantySubmit.click();
-
-            //Get value for Service Request Number
-            WebElement requestNumberText = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCongratulations\"]")));
-            String requestNumberRaw = requestNumberText.getText();
-
-            writeToLogSheet(warrantyMachine, machineModel, requestNumberRaw);
-
-            //Submit Warranty
-            WebElement createNewDispatch = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCreateAnother")));
-            createNewDispatch.click();
-
+            //Submit request
+            submitWarrantyRequest(driver, warrantyMachine, machineModel);
 
             //Remove current warranty machine from table
             database.removeRowFromWarrantyMachines(warrantyMachine);
         }
-
-        //Remove all entries from database table
-        //database.clearTable("WarrantyMachines");
 
         //Close database connection
         database.closeConnection();
@@ -560,19 +441,6 @@ public class MainUIGridPaneController implements Initializable {
     }
 
     /*
-    Check if a web element exists or not using it's xpath     
-     */
-    public boolean checkIfExistsByXpath(WebDriver driver, String xpath) {
-        try {
-            driver.findElement(By.xpath(xpath));
-        } catch (org.openqa.selenium.NoSuchElementException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /*
     Login to website
      */
     private void websiteLogin(WebDriver driver, String techDirectEmail, String techDirectPass){
@@ -586,15 +454,92 @@ public class MainUIGridPaneController implements Initializable {
         signIn.click();
     }
 
+    private void selectMachinePart(WebDriver driver, WarrantyMachine warrantyMachine, DatabaseHelper database, String machineModel){
+
+        //Switch to parts iFrame
+        WebElement partsIFrame = new WebDriverWait(driver, 30).until(
+                ExpectedConditions.presenceOfElementLocated(By.id("iParts")));
+        driver.switchTo().frame(partsIFrame);
+
+        //Wait for all parts to load
+        new WebDriverWait(driver, 60).until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("clr-checkbox-container")));
+
+        //Get part search criteria from database
+        String partDescription = database.getPartDescription(machineModel, warrantyMachine.partNeeded);
+
+        //Enter part needed in search box
+        WebElement partSearchField = new WebDriverWait(driver, 30).until(
+                ExpectedConditions.presenceOfElementLocated(By.name("search")));
+        partSearchField.sendKeys(partDescription);
+        partSearchField.sendKeys(Keys.RETURN);
+
+
+        //Check for checkbox element
+        try {
+            WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
+            checkbox.sendKeys(Keys.SPACE);
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+        }
+
+        //Check for radio button element
+        try{
+            WebElement radioButton = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='radio']"));
+            radioButton.sendKeys(Keys.SPACE);
+
+            //Check for serial number
+            if (warrantyMachine.serialNumber != null){
+                WebElement serialNumberField = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='text']"));
+                serialNumberField.sendKeys(warrantyMachine.serialNumber);
+            }
+        } catch (NoSuchElementException e){
+            e.printStackTrace();
+
+            //For 5530 model, if "80 Keys" search doesn't match, try "Palmrest" search
+            if (machineModel.equals("Precision 5530") && warrantyMachine.partNeeded.equals("Palmrest")) {
+                try {
+                    partSearchField.sendKeys(warrantyMachine.partNeeded);
+                    partSearchField.sendKeys(Keys.ENTER);
+                    WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
+                    checkbox.sendKeys(Keys.SPACE);
+                } catch (NoSuchElementException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
+
+    }
+
+    public void submitWarrantyRequest(WebDriver driver, WarrantyMachine warrantyMachine, String machineModel){
+
+        //Submit Warranty
+        WebElement warrantySubmit = new WebDriverWait(driver, 30).until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_btnNextStatus_43B9DA4D39254CE19F028F1BF6942430\"]")));
+        warrantySubmit.click();
+
+        //Get value for Service Request Number
+        WebElement requestNumberText = new WebDriverWait(driver, 30).until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCongratulations\"]")));
+        String requestNumberRaw = requestNumberText.getText();
+
+        writeToLogSheet(warrantyMachine, machineModel, requestNumberRaw);
+
+        //Submit Warranty
+        WebElement createNewDispatch = new WebDriverWait(driver, 30).until(
+                ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_dtlSubmitDispatchConfirm_ltCreateAnother")));
+        createNewDispatch.click();
+    }
+
     /*
     Cancel requests instead of submitting and logging **FOR DEBUGGING PURPOSES**
     */
-    private void cancelWarrantyRequest(WebDriver driver) throws InterruptedException {
+    private void cancelWarrantyRequest(WebDriver driver) {
 
-        Thread.sleep(2000);
         //Cancel Request
         WebElement cancelRequest = new WebDriverWait(driver, 30).until(
-                ExpectedConditions.presenceOfElementLocated(By.id("_ctl0_BodyContent_ctrl02A65B24_hlbtnNextStatus_C6046059F28B469D9D3916425CFFDEF9")));
+                ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_ctrl02A65B24_hlbtnNextStatus_C6046059F28B469D9D3916425CFFDEF9")));
         cancelRequest.click();
 
         //Switch to modal window
@@ -637,8 +582,10 @@ public class MainUIGridPaneController implements Initializable {
         Matcher matcher = serviceTagpattern.matcher(serviceTag);
         boolean serviceTagMatches = matcher.matches();
 
-        //Regex to limit serial number input to exactly 20 alphanumeric characters
-        String serialNumberRegex = "^[a-zA-Z0-9]{20}+$";
+        //wwidRegex
+        //String wwidRegex = "^[a-zA-Z]{2}\\d{4}";
+
+        String serialNumberRegex = "^[a-zA-Z0-9]{23}+$";
         Pattern serialNumberPattern = Pattern.compile(serialNumberRegex);
         matcher = serialNumberPattern.matcher(serialNumber);
         boolean serialNumberMatches = matcher.matches();
@@ -703,7 +650,6 @@ public class MainUIGridPaneController implements Initializable {
         //Validate the input
         return isValid;
     }
-
 }
 
 

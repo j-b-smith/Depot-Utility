@@ -32,6 +32,9 @@ public class DatabaseHelper {
         }
     }
 
+
+
+
     /*
     Retrieve a row from the LogSheet by index as a Log Entry object for Log Table
      */
@@ -279,6 +282,48 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
         return value;
+    }
+
+    public ArrayList<WarrantyMachine> getWarrantyMachines(){
+
+        //Create list of warrantyMachine objects
+        ArrayList<WarrantyMachine> warrantyMachineList = new ArrayList<>();
+
+
+        //Create database object and connect
+        DatabaseHelper database = new DatabaseHelper();
+        database.connect();
+
+        //Get the number of warranty machines in the database
+        int rowCount = database.getRowCount("WarrantyMachines");
+
+        //Create list of warranty machines from database
+        for (int i = 0; i < rowCount; i++) {
+
+            String serviceTag = database.getCellValue("Service_Tag", "WarrantyMachines", i);
+            String machineIssue = database.getCellValue("Machine_Issue", "WarrantyMachines", i);
+            String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i);
+            String partNeeded = database.getCellValue("Part_Needed", "WarrantyMachines", i);
+            String serialNumber = database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i);
+
+
+            //Check if part needed is a battery
+            if (partNeeded.equals("Battery") || partNeeded.equals("Display, Monitor")) {
+
+                //Create warranty machine object with battery
+                WarrantyMachine warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
+                        troubleshootingSteps, partNeeded, serialNumber);
+                warrantyMachineList.add(warrantyMachine);
+            } else {
+
+                //Create warranty machine object without battery
+                WarrantyMachine warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
+                        troubleshootingSteps, partNeeded);
+                warrantyMachineList.add(warrantyMachine);
+            }
+        }
+        database.closeConnection();
+        return warrantyMachineList;
     }
 
 
