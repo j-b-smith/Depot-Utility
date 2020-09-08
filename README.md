@@ -2,7 +2,7 @@
 
 The Warranty Machine Utility is a program designed to automate and optimize the process of submitting warranty requests to Dell through Dell Tech Direct. 
 
-The Warranty Machine Utility uses the Java 8 Software Development Kit, JavaFX, Selenium Webdriver, Chromdriver and sqlite3. (The database functionality will be converted to SQL Server Express) 
+The Warranty Machine Utility uses the Java 8 Software Development Kit, JavaFX, Selenium Webdriver, Chromdriver and SQL Server Express.
 
 Features of the Warranty Utility include:
   - Allows the user to store multiple Warranty Machines to have warranty requests submitted for
