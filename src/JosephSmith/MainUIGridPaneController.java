@@ -156,9 +156,10 @@ public class MainUIGridPaneController implements Initializable {
         ArrayList<WarrantyMachine> listViewMachineList = database.getWarrantyMachines();
 
         //Convert object list to Observable list
+
         ObservableList<WarrantyMachine> warrantyMachineListViewData = FXCollections.observableArrayList(listViewMachineList);
 
-        if (warrantyMachineListViewData.size() != 0) {
+        if (warrantyMachineListViewData.size() > 0) {
             //Set machine quantity label
             listViewCountLabel.setText("Qty: " + warrantyMachineListViewData.size());
         } else {
@@ -222,7 +223,7 @@ public class MainUIGridPaneController implements Initializable {
         database.connect();
 
         //Create lists from description sheet
-        ArrayList<String> machineIssueList = database.createListFromColumn("Machine_Issue", "DescriptionSheet");
+        ArrayList<String> machineIssueList = database.createListFromColumn("Machine_Issue", "IssueDescriptions");
 
         //Populate Machine Issue Combo Box
         ObservableList<String> machineIssueComboList = FXCollections.observableList(machineIssueList);
@@ -248,9 +249,9 @@ public class MainUIGridPaneController implements Initializable {
         database.connect();
 
         //Get values from description sheet based on machine issue selection value
-        String machineIssue = database.getCellValue("Machine_Issue", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
-        String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
-        String partNeeded = database.getCellValue("Part_Needed", "DescriptionSheet", "Machine_Issue", machineIssueSelection);
+        String machineIssue = database.getCellValue("Machine_Issue", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
+        String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
+        String partNeeded = database.getCellValue("Part_Needed", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
         String serviceTag = serviceTagTextField.getText();
 
         //Check if part needed is a battery
@@ -326,7 +327,7 @@ public class MainUIGridPaneController implements Initializable {
                 String alertMessage = driver.findElement(By.xpath("//*[@id=\"_ctl0_BodyContent_CreateDispL_caError_lblAlertText\"]")).getText();
 
                 //Write the alert to the alert sheet table
-                database.addNewRowToAlertSheet(warrantyMachine.serviceTag, alertMessage);
+                database.addNewRowToAlertLog(warrantyMachine.serviceTag, alertMessage);
 
                 //Skip the iteration of this machine
                 continue;
@@ -402,10 +403,10 @@ public class MainUIGridPaneController implements Initializable {
             }
 
             //**FOR DEBUGGING PURPOSES**
-            //cancelWarrantyRequest(driver);
+            cancelWarrantyRequest(driver);
 
             //Submit request
-            submitWarrantyRequest(driver, warrantyMachine, machineModel);
+            //submitWarrantyRequest(driver, warrantyMachine, machineModel);
 
             //Remove current warranty machine from table
             database.removeRowFromWarrantyMachines(warrantyMachine);
@@ -436,7 +437,7 @@ public class MainUIGridPaneController implements Initializable {
         requestNumber = requestNumber.substring(0, requestNumber.length() - 1);
 
         //Write Warranty Information to Log Sheet
-        database.addNewRowToLogSheet(requestNumber, warrantyMachine.serviceTag.toUpperCase(), machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
+        database.addNewRowToMachineLog(requestNumber, warrantyMachine.serviceTag.toUpperCase(), machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
         database.closeConnection();
     }
 
@@ -497,11 +498,12 @@ public class MainUIGridPaneController implements Initializable {
             e.printStackTrace();
 
             //For 5530 model, if "80 Keys" search doesn't match, try "Palmrest" search
-            if (machineModel.equals("Precision 5530") && warrantyMachine.partNeeded.equals("Palmrest")) {
+            if (machineModel.equals("Precision 5530") && warrantyMachine.partNeeded.equals("Palm Rest (incl Touch Pad)")) {
                 try {
-                    partSearchField.sendKeys(warrantyMachine.partNeeded);
-                    partSearchField.sendKeys(Keys.ENTER);
-                    WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
+                    partSearchField.clear();
+                    partSearchField.sendKeys("Palmrest");
+                    partSearchField.sendKeys(Keys.RETURN);
+                    WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'Palmrest')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
                     checkbox.sendKeys(Keys.SPACE);
                 } catch (NoSuchElementException e1) {
                     e1.printStackTrace();

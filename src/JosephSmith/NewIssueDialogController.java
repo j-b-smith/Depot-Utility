@@ -35,10 +35,10 @@ public class NewIssueDialogController implements Initializable {
 
         //Check if add new part is selected and write information to description sheet
         if (newPartNeededComboBox.getValue().equals("Add New Part")) {
-            database.addNewRowToDescriptionSheet(newMachineIssue.getText(),
+            database.addNewRowToIssueDescriptions(newMachineIssue.getText(),
                     newTroubleshootingSteps.getText(), addNewPartInput.getText());
         } else {
-            database.addNewRowToDescriptionSheet(newMachineIssue.getText(),
+            database.addNewRowToIssueDescriptions(newMachineIssue.getText(),
                     newTroubleshootingSteps.getText(), newPartNeededComboBox.getValue());
         }
 
@@ -65,7 +65,7 @@ public class NewIssueDialogController implements Initializable {
         database.connect();
 
         //Create lists from description sheet
-        partsList = database.createUniqueValueList("Part_Needed", "DescriptionSheet");
+        partsList = database.createUniqueValueList("Part_Needed", "IssueDescriptions");
 
         //Add option to input a new part
         partsList.add("Add New Part");

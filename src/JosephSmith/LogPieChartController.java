@@ -65,12 +65,12 @@ public class LogPieChartController implements Initializable {
         database.connect();
 
         //Get unique parts list from LogSheet table
-        ArrayList<String> uniqueParts = database.createUniqueValueList("Part_Needed", "LogSheet");
+        ArrayList<String> uniqueParts = database.createUniqueValueList("Part_Needed", "MachineLog");
 
         //Populate list with count of each part
         ArrayList<Integer> uniquePartCount = new ArrayList<>();
         for (String uniquePart : uniqueParts) {
-            uniquePartCount.add(database.getValueCount("Logsheet", "Part_Needed", uniquePart));
+            uniquePartCount.add(database.getValueCount("MachineLog", "Part_Needed", uniquePart));
         }
 
         //Populate list of PieChart.Data objects
@@ -98,12 +98,12 @@ public class LogPieChartController implements Initializable {
         database.connect();
 
         //Get unique models from Logsheet table
-        ArrayList<String> uniqueModels = database.createUniqueValueList("Model", "Logsheet");
+        ArrayList<String> uniqueModels = database.createUniqueValueList("Model", "MachineLog");
 
         //Populate list with count of each part
         ArrayList<Integer> uniqueModelCount = new ArrayList<>();
         for (String uniqueModel : uniqueModels){
-            uniqueModelCount.add(database.getValueCount("LogSheet", "Model", uniqueModel));
+            uniqueModelCount.add(database.getValueCount("MachineLog", "Model", uniqueModel));
         }
 
         //Populate list of PieChart.Data objects

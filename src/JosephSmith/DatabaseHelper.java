@@ -12,16 +12,15 @@ public class DatabaseHelper {
     //Constructor
     public DatabaseHelper(){}
 
-    //Connect to SQLite database
+    //Connect to SQLExpress database
     public void connect(){
         try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\jsmit\\IdeaProjects\\warrantyUtility\\dellAutomate.sqlite");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            connection = DriverManager.getConnection("jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility", "username", "password");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
-    
 
     //Close database connection
     public void closeConnection(){
@@ -32,20 +31,17 @@ public class DatabaseHelper {
         }
     }
 
-
-
-
     /*
     Retrieve a row from the LogSheet by index as a Log Entry object for Log Table
      */
     public LogEntry getLogRow(int index){
 
-        return new LogEntry(getCellValue("Date", "LogSheet", index),
-                (getCellValue("Request_Number", "LogSheet", index)),
-                (getCellValue("Service_Tag", "LogSheet", index)),
-                (getCellValue("Model", "LogSheet", index)),
-                (getCellValue("Machine_Issue", "LogSheet", index)),
-                (getCellValue("Part_Needed", "LogSheet", index)));
+        return new LogEntry(getCellValue("Date", "MachineLog", index),
+                (getCellValue("Request_Number", "MachineLog", index)),
+                (getCellValue("Service_Tag", "MachineLog", index)),
+                (getCellValue("Model", "MachineLog", index)),
+                (getCellValue("Machine_Issue", "MachineLog", index)),
+                (getCellValue("Part_Needed", "MachineLog", index)));
     }
 
     //Convert the log entry to a string for filtering
@@ -100,6 +96,7 @@ public class DatabaseHelper {
     Resets the indexes of a given table to the count of the row +1
     Allows for iteration through rowid after adding and removing rows
      */
+    /*
     public void reIndexTable(String tableName){
         try(Statement statement = connection.createStatement()){
             statement.executeUpdate("UPDATE " + tableName + " SET ROWID = (\n" +
@@ -107,6 +104,15 @@ public class DatabaseHelper {
                     "  FROM " + tableName +  " w\n" +
                     "  WHERE " + tableName + ".ROWID>w.ROWID\n" +
                     ");");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+     */
+
+    public void reIndexTable(String tableName){
+        try(Statement statement = connection.createStatement()){
+            statement.executeUpdate("ALTER TABLE " + tableName + " DROP COLUMN rowid; ALTER TABLE " + tableName + " ADD rowid int IDENTITY;");
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -123,7 +129,7 @@ public class DatabaseHelper {
             //Get result set
 
             ResultSet tempValue = statement.executeQuery
-                    ("SELECT " + returnColumn + " FROM " + tableName + " WHERE " + sortColumn + "= \"" + sortValue + "\";");
+                    ("SELECT " + returnColumn + " FROM " + tableName + " WHERE " + sortColumn + "= '" + sortValue + "';");
             //Move cursor to first position
             tempValue.next();
 
@@ -143,7 +149,7 @@ public class DatabaseHelper {
         try (Statement statement = connection.createStatement()){
             //Get Result set
             ResultSet countSet = statement.
-                    executeQuery("SELECT COUNT(*) AS count FROM " + tableName + " WHERE " + column +  "= \"" + value + "\";");
+                    executeQuery("SELECT COUNT(*) AS count FROM " + tableName + " WHERE " + column +  "= '" + value + "';");
             //Move cursor to first position
             countSet.next();
 
@@ -193,7 +199,7 @@ public class DatabaseHelper {
         }
     }
 
-    public void addNewRowToAlertSheet(String serviceTag, String alertMessage ){
+    public void addNewRowToAlertLog(String serviceTag, String alertMessage ){
 
         //Create date format and get current date
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
@@ -201,14 +207,14 @@ public class DatabaseHelper {
         String formattedDate = formatter.format(currentDate);
 
         try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("INSERT INTO AlertSheet (Date, Service_Tag, Alert_Message) " +
+            statement.executeUpdate("INSERT INTO AlertLog (Date, Service_Tag, Alert_Message) " +
                     "VALUES ('" + formattedDate + "' , '" + serviceTag + "' , '" + alertMessage + "');");
         } catch (SQLException e){
             e.printStackTrace();
         }
     }
 
-    public void addNewRowToLogSheet(String requestNumber, String serviceTag , String model, String machineIssue, String partNeeded ){
+    public void addNewRowToMachineLog(String requestNumber, String serviceTag , String model, String machineIssue, String partNeeded ){
 
         //Create date format and get current date
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
@@ -216,7 +222,7 @@ public class DatabaseHelper {
         String formattedDate = formatter.format(currentDate);
 
         try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("INSERT INTO LogSheet (Date, Request_Number, Service_Tag, Model, Machine_Issue, Part_Needed) " +
+            statement.executeUpdate("INSERT INTO MachineLog (Date, Request_Number, Service_Tag, Model, Machine_Issue, Part_Needed) " +
                     "VALUES ('" + formattedDate + "' , '" + requestNumber + "' , '" + serviceTag + "' , '" + model +
                     "' , '" + machineIssue + "' , '" + partNeeded + "' ); ");
         } catch (SQLException e){
@@ -224,17 +230,16 @@ public class DatabaseHelper {
         }
     }
 
-    public void addNewRowToDescriptionSheet( String machineIssue, String troubleshootingSteps, String partNeeded ){
+    public void addNewRowToIssueDescriptions( String machineIssue, String troubleshootingSteps, String partNeeded ){
         if (machineIssue != null && troubleshootingSteps != null && partNeeded != null) {
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("INSERT INTO DescriptionSheet (Machine_Issue, Troubleshooting_Steps, Part_Needed) VALUES " +
+                statement.executeUpdate("INSERT INTO IssueDescriptions (Machine_Issue, Troubleshooting_Steps, Part_Needed) VALUES " +
                         "('" + machineIssue + "' , '" + troubleshootingSteps + "' , '" + partNeeded + "');");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
-
 
     /*
     remove rows from warranty machine table by list of machines
@@ -262,7 +267,6 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
     }
-
 
     public String getPartDescription(String model, String part){
        model = model.replace(" ", "_");
@@ -325,7 +329,6 @@ public class DatabaseHelper {
         database.closeConnection();
         return warrantyMachineList;
     }
-
 
     /*
     Create lists from tables

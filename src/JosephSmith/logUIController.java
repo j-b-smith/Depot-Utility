@@ -21,17 +21,8 @@ public class logUIController implements Initializable {
     public TableColumn<LogEntry, String> modelColumn;
     public TableColumn<LogEntry, String> machineIssueColumn;
     public TableColumn<LogEntry, String> partNeededColumn;
-    public HBox logUIButtonHBox;
     public TableView<LogEntry> logUITableView;
-    public Button displayPieChart;
     public TextField logSearch;
-    public TableView<StatusEntry> statusTable;
-    public TableColumn<Object, Object> serviceTag;
-    public TableColumn<Object, Object> status;
-
-    @FXML
-    Button returnToMainButton;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -44,7 +35,7 @@ public class logUIController implements Initializable {
         database.connect();
 
         //Get Log row count
-        int logRowCount = database.getRowCount("LogSheet");
+        int logRowCount = database.getRowCount("MachineLog");
 
         //Create temporary arrayList for LogEntries
         ArrayList<LogEntry> temp = new ArrayList<>();
@@ -90,7 +81,7 @@ public class logUIController implements Initializable {
             database.connect();
 
             //Get Log row count
-            int logRowCount = database.getRowCount("LogSheet");
+            int logRowCount = database.getRowCount("MachineLog");
 
             //Create temporary arrayList for LogEntries
             ArrayList<LogEntry> tempLogData = new ArrayList<>();
