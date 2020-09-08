@@ -16,7 +16,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <TabPane fx:controller="JosephSmith.MainUIGridPaneController"
-         xmlns:fx="http://javafx.com/fxml" side="LEFT" >
+         xmlns:fx="http://javafx.com/fxml" side="LEFT">
     <Tab text="Warranty Form" closable="false" style="-fx-font-weight: bold;">
         <GridPane vgap="10" hgap="10">
             <padding>
@@ -24,9 +24,9 @@
             </padding>
 
             <columnConstraints>
-                <ColumnConstraints percentWidth="38"/>
-                <ColumnConstraints percentWidth="38"/>
                 <ColumnConstraints percentWidth="24"/>
+                <ColumnConstraints percentWidth="38"/>
+                <ColumnConstraints percentWidth="38"/>
             </columnConstraints>
 
             <rowConstraints>
@@ -45,7 +45,7 @@
                 </font>
             </Label>
 
-            <VBox GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS" spacing="10">
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS" spacing="10">
                 <Label text="Enter Service Tag: " style="-fx-font-weight: bold;"/>
                 <TextField fx:id="serviceTagTextField" onAction="#onServiceTagInputEnter"/>
 
@@ -59,10 +59,10 @@
 
             </VBox>
             <Button fx:id="submitMachineButton" text="Submit Machine"
-                    onAction="#submitMachineButton" GridPane.columnIndex="2"
-                    GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.halignment="RIGHT"/>
+                    onAction="#submitMachineButton" GridPane.columnIndex="0"
+                    GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.halignment="CENTER"/>
 
-            <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
                 <Button fx:id="removeListViewItem" text="Remove Selected Items" HBox.hgrow="ALWAYS"
                         onAction="#removeFromListView" alignment="BOTTOM_LEFT"/>
                 <Label fx:id="listViewCountLabel" style="fx-font-weight: bold;" alignment="BOTTOM_LEFT">
@@ -72,13 +72,13 @@
                 </Label>
 
             </HBox>
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
+            <HBox GridPane.columnIndex="2" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" GridPane.halignment="LEFT" spacing="20">
                 <Label fx:id="alertLabel" visible="false" textFill="red" style="-fx-font-weight: bold;" wrapText="true"/>
             </HBox>
 
 
 
-            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
                   spacing="20">
                 <TableView fx:id="warrantyMachineTableView" VBox.vgrow="ALWAYS">
                     <placeholder>

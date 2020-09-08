@@ -18,37 +18,10 @@
         </padding>
     </Label>
 
-    <columnConstraints>
-        <ColumnConstraints percentWidth="20"/>
-        <ColumnConstraints percentWidth="80"/>
-    </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="10"/>
         <RowConstraints percentHeight="85"/>
     </rowConstraints>
-
-    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" spacing="10">
-        <padding>
-            <Insets top="20" right="20" bottom="65" left="20"/>
-        </padding>
-
-        <Label text="Machine Status"/>
-
-        <TableView fx:id="statusTable" VBox.vgrow="ALWAYS">
-            <placeholder>
-                <Label text="Status Not Available"/>
-            </placeholder>
-
-            <columns>
-                <TableColumn fx:id="serviceTag" text="Service Tag"/>
-                <TableColumn fx:id="status" text="Status"/>
-            </columns>
-
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-            </columnResizePolicy>
-        </TableView>
-    </VBox>
 
 
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"  GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS"  spacing="10">
@@ -56,7 +29,6 @@
         <padding>
             <Insets top="20" right="20" bottom="30" left="20"/>
         </padding>
-        <Label text="Machine Log"/>
 
         <TableView fx:id="logUITableView" VBox.vgrow="ALWAYS">
             <placeholder>

@@ -1,7 +1,0 @@
--Updated MainUIGridPaneController part selection to use XPATH ancestors and descendants to improve accuracy and efficiency (~68 Lines --> ~34 Lines)
-	-All issue parts corrected with XPATH ancestors/descendants
--Removed MainUIGridPaneController function checkIfExistsByXpath() and replaced instances with try/catch
--Relocated MainUIGridPaneController getWarrantyMachines() function to DatabaseHelper class
--Replaced redundant warranty machine list population with call to DatabaseHelper.getWarrantyMachines()
--Relocated process for selecting parts from performWarranty() --> selectMachinePart() in MainUIGridPaneController
--Relocated process for submitting request from performWarranty() --> submitWarrantyRequest() in MainUIGridPaneController

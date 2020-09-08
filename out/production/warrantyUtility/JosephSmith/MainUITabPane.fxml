@@ -11,8 +11,6 @@
         <fx:include source="mainUIGridPane.fxml"/>
     </Tab>
 
-    <Tab text="Non-Warranty" closable="false" style="-fx-font-weight: bold;"/>
-
     <Tab text="Service Now" closable="false" style="-fx-font-weight: bold;">
         <fx:include source="ServiceNowUI.fxml"/>
     </Tab>
