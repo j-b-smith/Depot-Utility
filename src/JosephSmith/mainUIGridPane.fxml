@@ -13,6 +13,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <TabPane fx:controller="JosephSmith.MainUIGridPaneController"
          xmlns:fx="http://javafx.com/fxml" side="LEFT" >
     <Tab text="Warranty Form" closable="false" style="-fx-font-weight: bold;">
@@ -50,21 +52,11 @@
                 <Label text="Select Machine Issue" style="-fx-font-weight: bold;"/>
                 <ComboBox fx:id="machineIssueComboBox" onKeyPressed="#onComboKeyEnter" onAction="#onComboBoxChange"/>
 
-                <HBox spacing="10">
-                    <Label text="Check This Box For Multiple Issues:" style="-fx-font-weight: bold;"/>
-                    <CheckBox fx:id="multipleIssuesCheckbox"/> <!--onAction="#onCheckboxChange"/>-->
-                </HBox>
 
                 <Label fx:id="serialNumberLabel" text="Serial Number" visible="false" style="-fx-font-weight: bold;"/>
                 <TextField fx:id="serialNumberTextField" visible="false" disable="true"/>
 
 
-
-                <HBox spacing="20">
-                <Label fx:id="multipleIssueLabel" text="Issues:" visible="false" style="-fx-font-weight: bold;"/>
-                    <Button fx:id="multipleIssueButton" text="Add Issue" visible="false" disable="true"/> <!--onAction="#addIssueToMachine"/>-->
-                </HBox>
-                <ListView fx:id="multipleIssueListView" visible="false"/>
             </VBox>
             <Button fx:id="submitMachineButton" text="Submit Machine"
                     onAction="#submitMachineButton" GridPane.columnIndex="2"
@@ -88,11 +80,24 @@
 
             <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"
                   spacing="20">
-                <ListView fx:id="warrantyMachineListView">
+                <TableView fx:id="warrantyMachineTableView" VBox.vgrow="ALWAYS">
                     <placeholder>
-                        <Label text="No Machines In Current Batch" style="-fx-font-weight: bold;"/>
+                        <Label text="There are no results for this search"/>
                     </placeholder>
-                </ListView>
+
+                    <columns>
+                        <TableColumn fx:id="serviceTagColumn" text="Service Tag"/>
+                        <TableColumn fx:id="machineIssueColumn" text="Machine Issue"/>
+                        <TableColumn fx:id="troubleshootingStepsColumn" text="Troublehshooting Steps"/>
+                        <TableColumn fx:id="partNeededColumn" text="Part Needed"/>
+                        <TableColumn fx:id="serialNumberColumn" text="Serial Number"/>
+                    </columns>
+
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+
             </VBox>
             <Button fx:id="initiateWarranty" text="Initiate Warranty" HBox.hgrow="ALWAYS"
                     onAction="#initiateWarrantyButton" GridPane.columnIndex="1"

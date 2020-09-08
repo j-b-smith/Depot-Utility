@@ -7,7 +7,6 @@ public class WarrantyMachine {
     String troubleshootingSteps;
     String partNeeded;
     String serialNumber;
-    String partDescription;
 
     public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded){
         this.serviceTag = serviceTag.toUpperCase();
@@ -34,4 +33,26 @@ public class WarrantyMachine {
         } else
             return this.serviceTag + " | " + this.machineIssue + " | " + this.troubleshootingSteps + " | " + this.partNeeded;
     }
+
+    public String getServiceTag() {
+        return serviceTag;
+    }
+
+    public String getMachineIssue() {
+        return machineIssue;
+    }
+
+    public String getTroubleshootingSteps() {
+        return troubleshootingSteps;
+    }
+
+    public String getPartNeeded() {
+        return partNeeded;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
 }
+
+

@@ -41,14 +41,10 @@ public class LoginDialogController implements Initializable {
 
         //Call performWarranty on separate thread
             warrantyThread = new Thread(() -> {
-            try {
                 String techDirectEmail = techDirectEmailField.getText();
                 String techDirectPass = techDirectPassField.getText();
                 mainController.performWarranty(techDirectEmail, techDirectPass);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+            });
         warrantyThread.start();
 
         //Close login dialog
