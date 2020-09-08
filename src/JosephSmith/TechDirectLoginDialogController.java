@@ -7,20 +7,20 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginDialogController implements Initializable {
+public class TechDirectLoginDialogController implements Initializable {
     @FXML
     public Button loginCancelButton;
-    public Button loginOKButton;
-    public TextField techDirectEmailField;
+    public Button loginButton;
+    public TextField wwidField;
     public PasswordField techDirectPassField;
     public Thread warrantyThread;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -41,14 +41,14 @@ public class LoginDialogController implements Initializable {
 
         //Call performWarranty on separate thread
             warrantyThread = new Thread(() -> {
-                String techDirectEmail = techDirectEmailField.getText();
+                String techDirectEmail = wwidField.getText() + "@cummins.com";
                 String techDirectPass = techDirectPassField.getText();
                 mainController.performWarranty(techDirectEmail, techDirectPass);
             });
         warrantyThread.start();
 
         //Close login dialog
-        Stage stage = (Stage) loginOKButton.getScene().getWindow();
+        Stage stage = (Stage) loginButton.getScene().getWindow();
         stage.close();
 
         warrantyThread.join();

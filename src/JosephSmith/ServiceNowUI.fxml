@@ -32,14 +32,6 @@
         <TextArea fx:id="workNotes" wrapText="true"/>
 
         <Button text="Add Task" onAction="#addToQueue"/>
-
-        <Label text="User Information" alignment="CENTER" style="-fx-font-weight: bold;"/>
-        <Label text='"Assign To" Name: ' wrapText="true" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="techNameComboBox"/>
-        <Label text="WWID: " wrapText="true" style="-fx-font-weight: bold;"/>
-        <TextField fx:id="userWWID"/>
-        <Label text="Password: " style="-fx-font-weight: bold;"/>
-        <PasswordField fx:id="techPassword"/>
     </VBox>
 
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10" >
@@ -58,11 +50,9 @@
             </columnResizePolicy>
         </TableView>
         <Button text="Remove Selected Task" onAction="#removeTask"/>
-
-        <!--<Button text="FedEx" onAction="#initiateFedexLabels"/>-->
     </VBox>
     <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
-        <Button text="Complete Tasks" onAction="#completeTasks"/>
+        <Button text="Complete Tasks" onAction="#openLoginDialog"/>
     </HBox>
 
 </GridPane>

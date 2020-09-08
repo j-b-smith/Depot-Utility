@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
-          fx:controller="JosephSmith.LoginDialogController"
+          fx:controller="JosephSmith.TechDirectLoginDialogController"
           prefHeight="100" prefWidth="400">
     <padding>
         <Insets top="20" bottom="20" left="20" right="20"/>
@@ -23,18 +23,18 @@
 
 
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="10">
-        <Label text="E-Mail: " style="-fx-font-weight: bold;"/>
+        <Label text="WWID: " style="-fx-font-weight: bold;"/>
         <Label text="Password: " style="-fx-font-weight: bold;"/>
     </VBox>
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10" GridPane.hgrow="ALWAYS">
-        <TextField fx:id="techDirectEmailField"/>
+        <TextField fx:id="wwidField"/>
         <PasswordField fx:id="techDirectPassField"/>
     </VBox>
     <HBox GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.halignment="RIGHT" spacing="10">
         <padding>
             <Insets top="20"/>
         </padding>
-        <Button fx:id="loginOKButton" text="OK" onAction="#performWarranty" style="-fx-font-weight: bold;"/>
+        <Button fx:id="loginButton" text="Login" onAction="#performWarranty" style="-fx-font-weight: bold;"/>
         <Button fx:id="loginCancelButton" text="Cancel" onAction="#returnToWarrantyForm" style="-fx-font-weight: bold;"/>
     </HBox>
 

@@ -18,7 +18,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -63,7 +62,7 @@ public class MainUIGridPaneController implements Initializable {
     Create and display login dialog
      */
     public void openLoginDialog() throws IOException, InterruptedException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("loginDialog.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("TechDirectloginDialogUI.fxml"));
         Parent root = (Parent) loader.load();
         Stage stage = new Stage();
         Scene scene = new Scene(root);
@@ -74,7 +73,7 @@ public class MainUIGridPaneController implements Initializable {
         stage.showAndWait();
 
         //Get controller
-        LoginDialogController loginController = loader.getController();
+        TechDirectLoginDialogController loginController = loader.getController();
         loginController.warrantyThread.join();
         populateMachineListView();
     }
@@ -87,8 +86,9 @@ public class MainUIGridPaneController implements Initializable {
     Populate the list view
      */
     @FXML
-    public void submitMachineButton() {
-            boolean isValid = warrantyFormValidation();
+    public void submitMachineButton() throws IOException {
+            InputValidator validator = new InputValidator(this);
+            boolean isValid = validator.warrantyFormValidation();
 
             if (isValid) {
                 alertLabel.setVisible(false);
@@ -570,7 +570,7 @@ public class MainUIGridPaneController implements Initializable {
         createDispatch2.click();
     }
 
-
+    /*
     public boolean warrantyFormValidation() {
 
         //retrieve values from form fields
@@ -652,6 +652,8 @@ public class MainUIGridPaneController implements Initializable {
         //Validate the input
         return isValid;
     }
+
+     */
 }
 
 

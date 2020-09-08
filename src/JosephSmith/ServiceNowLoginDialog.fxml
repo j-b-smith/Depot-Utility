@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="JosephSmith.ServiceNowLoginDialogController"
+          prefHeight="80" prefWidth="700" hgap="10">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <columnConstraints>
+        <ColumnConstraints percentWidth="33"/>
+        <ColumnConstraints percentWidth="33"/>
+        <ColumnConstraints percentWidth="33"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints percentHeight="20"/>
+        <RowConstraints percentHeight="30"/>
+        <RowConstraints percentHeight="30"/>
+        <RowConstraints percentHeight="20"/>
+    </rowConstraints>
+
+    <Label text="Service Now Login Credentials" GridPane.columnSpan="3" GridPane.halignment="CENTER" style="-fx-font-weight: bold;">
+        <padding>
+            <Insets bottom="10"/>
+        </padding>
+    </Label>
+
+
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="20">
+        <Label text="WWID: " style="-fx-font-weight: bold;"/>
+        <Label text="Password: " style="-fx-font-weight: bold;"/>
+        <Label text='"Assign To" Name: ' wrapText="true" style="-fx-font-weight: bold;"/>
+    </VBox>
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS">
+        <TextField fx:id="serviceNowWwidField"/>
+        <PasswordField fx:id="serviceNowPassField"/>
+        <ComboBox fx:id="techNameComboBox"/>
+    </VBox>
+    <HBox GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="3">
+        <padding>
+            <Insets top="20"/>
+        </padding>
+        <Label fx:id="alertLabel" textFill="red" visible="false" wrapText="true"/>
+    </HBox>
+    <HBox GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.halignment="RIGHT" spacing="10">
+        <padding>
+            <Insets top="20"/>
+        </padding>
+        <Button fx:id="loginButton" text="Login" onAction="#completeTasks" style="-fx-font-weight: bold;"/>
+        <Button fx:id="loginCancelButton" text="Cancel" onAction="#returnToServiceNowForm" style="-fx-font-weight: bold;"/>
+    </HBox>
+
+</GridPane>

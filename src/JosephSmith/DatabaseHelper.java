@@ -16,7 +16,7 @@ public class DatabaseHelper {
     public void connect(){
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection("jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility", "username", "password");
+            connection = DriverManager.getConnection("jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility", "sa", "Kayla0626!$");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

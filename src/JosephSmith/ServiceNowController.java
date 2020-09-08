@@ -5,17 +5,21 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ServiceNowController implements Initializable {
@@ -29,9 +33,7 @@ public class ServiceNowController implements Initializable {
     public PasswordField techPassword;
     public TextField trackingNumber;
     public TableColumn<Object, Object> sctaskTrackingColumn;
-    public ComboBox<String> techNameComboBox;
     public ArrayList<SCTask> taskObjectList = new ArrayList<>();
-    public ArrayList<String> techNameList = new ArrayList<>(Arrays.asList("Tech1", "Tech2", "Tech3"));
     public TextField userWWID;
 
     @Override
@@ -39,11 +41,6 @@ public class ServiceNowController implements Initializable {
 
         //Allow multiple row selections in table
         scTaskTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        //Populate techname combobox
-        ObservableList<String> techNameData = FXCollections.observableArrayList(techNameList);
-        techNameComboBox.setItems(techNameData);
-
     }
 
     public void addToQueue(){
@@ -104,11 +101,25 @@ public class ServiceNowController implements Initializable {
         scTaskTable.setItems(taskData);
     }
 
-    public void completeTasks() throws InterruptedException {
+    public void completeTasksButton() throws IOException, InterruptedException {
+        openLoginDialog();
+    }
 
-        String email = userWWID.getText() + "@cummins.com";
-        String password = techPassword.getText();
-        String name = techNameComboBox.getSelectionModel().getSelectedItem();
+    public void openLoginDialog() throws IOException, InterruptedException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ServiceNowLoginDialog.fxml"));
+        Parent root = (Parent) loader.load();
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("Service Now Login");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+
+    }
+
+    public void completeTasks(String email, String password, String name) throws InterruptedException {
+
 
         //Create ChromeDriver object
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\jsmit\\chromedriver.exe");
@@ -211,26 +222,4 @@ public class ServiceNowController implements Initializable {
 
         onCloseTaskComplete();
     }
-
-    /*
-    public void initiateFedexLabels() throws IOException, InterruptedException {
-
-        Runtime runtime = Runtime.getRuntime();
-        runtime.exec("C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe");
-        //runtime.exec("FedEx.Gsm.Cafe.ApplicationEngine.Gui.exe");
-
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability("app", "C:\\Program Files (x86)\\FedEx\\ShipManager\\BIN\\FedEx.Gsm.Cafe.ApplicationEngine.Gui.exe");
-        WindowsDriver appDriver = new WindowsDriver(new URL("http://127.0.0.1:4723/"), desiredCapabilities);
-
-        System.out.println("Made it Here");
-        System.out.println(appDriver.getWindowHandles());
-        appDriver.switchTo().window("0x50CC2");
-        appDriver.findElement(By.id("buttonOk")).click();
-        System.out.println("And G");
-
-        Thread.sleep(5000);
-        runtime.exit(0);
-    }
-     */
 }
