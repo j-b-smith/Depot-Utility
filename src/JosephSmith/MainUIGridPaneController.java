@@ -21,8 +21,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainUIGridPaneController implements Initializable {
     public Button submitMachineButton;
@@ -403,10 +401,10 @@ public class MainUIGridPaneController implements Initializable {
             }
 
             //**FOR DEBUGGING PURPOSES**
-            cancelWarrantyRequest(driver);
+            //cancelWarrantyRequest(driver);
 
             //Submit request
-            //submitWarrantyRequest(driver, warrantyMachine, machineModel);
+            submitWarrantyRequest(driver, warrantyMachine, machineModel);
 
             //Remove current warranty machine from table
             database.removeRowFromWarrantyMachines(warrantyMachine);
@@ -569,91 +567,6 @@ public class MainUIGridPaneController implements Initializable {
                 ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_common_boxes_rptBoxes__ctl1_btnBox")));
         createDispatch2.click();
     }
-
-    /*
-    public boolean warrantyFormValidation() {
-
-        //retrieve values from form fields
-        String serviceTag = serviceTagTextField.getText();
-        String machineIssueSelection = machineIssueComboBox.getValue();
-        String serialNumber = serialNumberTextField.getText();
-
-        //Regex to limit service tag input to exactly 7 alphanumeric characters
-        String serviceTagRegex = "^[a-zA-Z0-9]{7}+$";
-        Pattern serviceTagpattern = Pattern.compile(serviceTagRegex);
-        Matcher matcher = serviceTagpattern.matcher(serviceTag);
-        boolean serviceTagMatches = matcher.matches();
-
-        //wwidRegex
-        //String wwidRegex = "^[a-zA-Z]{2}\\d{4}";
-
-        String serialNumberRegex = "^[a-zA-Z0-9]{23}+$";
-        Pattern serialNumberPattern = Pattern.compile(serialNumberRegex);
-        matcher = serialNumberPattern.matcher(serialNumber);
-        boolean serialNumberMatches = matcher.matches();
-        boolean serialNumberVisible = serialNumberTextField.isVisible();
-
-        //Store the result of all checks
-        boolean isValid = true;
-
-        //Check if service tag and serial number are incorrect
-        if (!serviceTagMatches && serialNumberVisible && !serialNumberMatches){
-            alertLabel.setText("* Service Tag must be 7 characters (a-z, A-Z, 0-9)\n* Serial Number must be 20 characters (a-z, A-Z, 0-9)");
-            serviceTagTextField.setStyle("-fx-border-color: red;");
-            serialNumberTextField.setStyle("-fx-border-color: red;");
-            machineIssueComboBox.setStyle(null);
-            alertLabel.setVisible(true);
-            isValid = false;
-
-        //Check if service tag and machine issue selection are incorrect
-        } else if (!serviceTagMatches && machineIssueSelection == null){
-            alertLabel.setText("* Service Tag must be 7 characters (a-z, A-Z, 0-9)\n* Please select a machine issue");
-            serviceTagTextField.setStyle("-fx-border-color: red;");
-            serialNumberTextField.setStyle(null);
-            machineIssueComboBox.setStyle("-fx-border-color: red;");
-            alertLabel.setVisible(true);
-            isValid = false;
-
-        //Check if service tag is incorrect
-        } else if (!serviceTagMatches){
-            alertLabel.setText("* Service Tag must be 7 characters (a-z, A-Z, 0-9)");
-            serviceTagTextField.setStyle("-fx-border-color: red;");
-            serialNumberTextField.setStyle(null);
-            machineIssueComboBox.setStyle(null);
-            alertLabel.setVisible(true);
-            isValid = false;
-
-        //Check if machine issue selection is incorrect
-        } else if (machineIssueSelection == null){
-            alertLabel.setText("* Please select a machine issue");
-            serviceTagTextField.setStyle(null);
-            serialNumberTextField.setStyle(null);
-            machineIssueComboBox.setStyle("-fx-border-color: red;");
-            alertLabel.setVisible(true);
-            isValid = false;
-
-        //Check if serial number is visible and incorrect
-        } else if (serialNumberVisible && !serialNumberMatches){
-            alertLabel.setText("* Serial Number must be 20 characters (a-z, A-Z, 0-9)");
-            serviceTagTextField.setStyle(null);
-            serialNumberTextField.setStyle("-fx-border-color: red;");
-            machineIssueComboBox.setStyle(null);
-            alertLabel.setVisible(true);
-            isValid = false;
-
-        //Remove styles if all tests pass
-        } else {
-            serviceTagTextField.setStyle(null);
-            serialNumberTextField.setStyle(null);
-            machineIssueComboBox.setStyle(null);
-            alertLabel.setVisible(false);
-        }
-
-        //Validate the input
-        return isValid;
-    }
-
-     */
 }
 
 

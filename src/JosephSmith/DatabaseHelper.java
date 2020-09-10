@@ -12,11 +12,13 @@ public class DatabaseHelper {
     //Constructor
     public DatabaseHelper(){}
 
+
+
     //Connect to SQLExpress database
     public void connect(){
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection("jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility", "sa", "Kayla0626!$");
+            connection = DriverManager.getConnection(localSQLServer, localUser, localPass);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

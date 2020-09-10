@@ -8,7 +8,8 @@
 <GridPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="JosephSmith.NewIssueDialogController"
-            prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10">
+            prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10"
+>
             <padding>
                 <Insets top="20" bottom="20" left="20" right="20"/>
             </padding>
@@ -17,8 +18,7 @@
                 <RowConstraints percentHeight="10"/>
                 <RowConstraints percentHeight="10"/>
                 <RowConstraints percentHeight="50"/>
-                <RowConstraints percentHeight="10"/>
-                <RowConstraints percentHeight="10"/>
+                <RowConstraints percentHeight="20"/>
                 <RowConstraints percentHeight="10"/>
             </rowConstraints>
             <Label text="Add New Issue" GridPane.columnIndex="0" GridPane.rowIndex="0"
@@ -30,14 +30,16 @@
             <Label text="Enter Machine Issue: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <Label text="Enter Troubleshooting Steps: " GridPane.columnIndex="0" GridPane.rowIndex="2" wrapText="true"/>
             <Label text="Select Part Needed: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <Label fx:id="alertLabel" GridPane.columnIndex="0" GridPane.rowIndex="5" textFill="red" GridPane.columnSpan="2"/>
-            <Label fx:id="addNewPartLabel" text="Enter New Part:" GridPane.columnIndex="0" GridPane.rowIndex="4" visible="false"/>
+
+
 
             <TextField fx:id="newMachineIssue" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
             <TextArea fx:id="newTroubleshootingSteps" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" wrapText="true"/>
-            <ComboBox fx:id="newPartNeededComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS" onAction="#partComboBoxChange"/>
-            <TextField fx:id="addNewPartInput" GridPane.columnIndex="1" GridPane.rowIndex="4" visible="false" disable="true" GridPane.hgrow="ALWAYS"/>
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="5" alignment="BOTTOM_RIGHT">
+            <HBox  GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS" spacing="20">
+                <ComboBox fx:id="newPartNeededComboBox"/>
+                <Label fx:id="alertLabel" textFill="red"/>
+            </HBox>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="BOTTOM_RIGHT">
                 <Button fx:id="addNewMachineIssueButton" text="Add Issue" onAction="#addNewMachineIssue"/>
             </HBox>
         </GridPane>

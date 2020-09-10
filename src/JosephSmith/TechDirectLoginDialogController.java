@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -17,9 +18,10 @@ public class TechDirectLoginDialogController implements Initializable {
     @FXML
     public Button loginCancelButton;
     public Button loginButton;
-    public TextField wwidField;
     public PasswordField techDirectPassField;
     public Thread warrantyThread;
+    public Label alertLabel;
+    public TextField techDirectWwidField;
 
 
     @Override
@@ -39,21 +41,25 @@ public class TechDirectLoginDialogController implements Initializable {
         //Get controller
         MainUIGridPaneController mainController = loader.getController();
 
-        //Call performWarranty on separate thread
+        //Get input validator
+        InputValidator validator = new InputValidator(this);
+
+        //Validate
+        if (validator.techDirectLoginValidation()) {
+            //Call performWarranty on separate thread
             warrantyThread = new Thread(() -> {
-                String techDirectEmail = wwidField.getText() + "@cummins.com";
+                String techDirectEmail = techDirectWwidField.getText() + "@cummins.com";
                 String techDirectPass = techDirectPassField.getText();
                 mainController.performWarranty(techDirectEmail, techDirectPass);
             });
-        warrantyThread.start();
+            warrantyThread.start();
 
-        //Close login dialog
-        Stage stage = (Stage) loginButton.getScene().getWindow();
-        stage.close();
+            //Close login dialog
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.close();
 
-        warrantyThread.join();
-
-
+            warrantyThread.join();
+        }
     }
 
     //Close login dialog when cancel is clicked

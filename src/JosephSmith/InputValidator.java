@@ -1,16 +1,27 @@
 package JosephSmith;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InputValidator {
+
+    //Controllers
     MainUIGridPaneController mainController;
     ServiceNowController serviceNowController;
     TechDirectLoginDialogController techDirectLoginDialogController;
     ServiceNowLoginDialogController serviceNowLoginDialogController;
+    NewIssueDialogController newIssueDialogController;
 
-    //Constructors with each controller
+    //Error Strings
+    String wwidError = "* WWID must be 5 character and include 2 letters followed by 3 digits";
+    String passwordError = "* Please enter a password";
+
+    //Regex
+    String wwidRegex = "^[a-zA-Z]{2}\\d{3}";
+    String serviceTagRegex = "^[a-zA-Z0-9]{7}+$";
+    String serialNumberRegex = "^[a-zA-Z0-9]{23}+$";
+
+    //Constructors for each controller
     public InputValidator(MainUIGridPaneController mainUIGridPaneController) {
         this.mainController = mainUIGridPaneController;
     }
@@ -27,6 +38,10 @@ public class InputValidator {
         this.serviceNowLoginDialogController = serviceNowLoginDialogController;
     }
 
+    public InputValidator(NewIssueDialogController newIssueDialogController) {
+        this.newIssueDialogController = newIssueDialogController;
+    }
+
     public boolean warrantyFormValidation(){
 
         //retrieve values from form fields
@@ -40,13 +55,11 @@ public class InputValidator {
         String machineIssueError = "* Please select a machine issue";
 
         //Regex to limit service tag input to exactly 7 alphanumeric characters
-        String serviceTagRegex = "^[a-zA-Z0-9]{7}+$";
         Pattern serviceTagpattern = Pattern.compile(serviceTagRegex);
         Matcher matcher = serviceTagpattern.matcher(serviceTag);
         boolean serviceTagMatches = matcher.matches();
 
-
-        String serialNumberRegex = "^[a-zA-Z0-9]{23}+$";
+        //Regex to limit serial number to exactly 23 alphanumeric characters
         Pattern serialNumberPattern = Pattern.compile(serialNumberRegex);
         matcher = serialNumberPattern.matcher(serialNumber);
         boolean serialNumberMatches = matcher.matches();
@@ -111,12 +124,121 @@ public class InputValidator {
         //Validate the input
         return isValid;
     }
-    /*
+    
     public boolean techDirectLoginValidation(){
+        
+        //Retrieve values from form fields
+        String userWWID = techDirectLoginDialogController.techDirectWwidField.getText();
+        String userPass = techDirectLoginDialogController.techDirectPassField.getText();
 
+        //Regex to limit WWID to alphanumeric characters with 2 letters followed by 3 digits
+        Pattern wwidPattern = Pattern.compile(wwidRegex);
+        Matcher matcher = wwidPattern.matcher(userWWID);
+        boolean wwidMatches = matcher.matches();
+
+        //Store the result of all checks
+        boolean isValid = true;
+
+        //Check if wwid is incorrect and password is blank
+        if (!wwidMatches && userPass.equals("")) {
+            techDirectLoginDialogController.alertLabel.setText(wwidError + "\n" + passwordError);
+            techDirectLoginDialogController.techDirectWwidField.setStyle("-fx-border-color: red;");
+            techDirectLoginDialogController.techDirectPassField.setStyle("-fx-border-color: red;");
+            techDirectLoginDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect
+        } else if (!wwidMatches) {
+            techDirectLoginDialogController.alertLabel.setText(wwidError);
+            techDirectLoginDialogController.techDirectWwidField.setStyle("-fx-border-color: red;");
+            techDirectLoginDialogController.techDirectPassField.setStyle(null);
+            techDirectLoginDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if password is blank
+        } else if (userPass.equals("")) {
+            techDirectLoginDialogController.alertLabel.setText(passwordError);
+            techDirectLoginDialogController.techDirectWwidField.setStyle(null);
+            techDirectLoginDialogController.techDirectPassField.setStyle("-fx-border-color: red;");
+            techDirectLoginDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Set styles to default and hide label
+        } else {
+            techDirectLoginDialogController.techDirectWwidField.setStyle(null);
+            techDirectLoginDialogController.techDirectPassField.setStyle(null);
+            techDirectLoginDialogController.alertLabel.setVisible(false);
+        }
+        return isValid;
     }
 
-     */
+    public boolean serviceNowFormValidation(){
+        //Retrieve values from form fields
+        String sctaskNumber = serviceNowController.taskNumber.getText();
+        String trackingNumber = serviceNowController.trackingNumber.getText();
+
+        //Error Strings
+        String sctaskError = "* Please enter an SCTASK number in the format \"SCTASK1234567\" or \"1234567\"";
+        String trackingError = "* Please enter a tracking number that is 12 digits long (0-9)";
+
+        //Regex to limit SCTASK number to the exact phrase "SCTASK" followed by exactly 7 digits
+        String fullSCTaskRegex = "^\\bSCTASK\\d{7}$";
+        Pattern fullSCTaskRegexPattern = Pattern.compile(fullSCTaskRegex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = fullSCTaskRegexPattern.matcher(sctaskNumber);
+        boolean fullSCTaskMatches = matcher.matches();
+
+        //Regex to limit SCTASK number to exactly 7 digits (SCTASK will be appended)
+        String shortSCTaskRegex = "^[0-9]{7}$";
+        Pattern shortSCTaskRegexPattern = Pattern.compile(shortSCTaskRegex);
+        matcher = shortSCTaskRegexPattern.matcher(sctaskNumber);
+        boolean shortSCTaskMatches = matcher.matches();
+
+        //Regex to limit tracking number to exactly 12 digits
+        String trackingNumberRegex = "^[0-9]{12}$";
+        Pattern trackingNumberRegexPattern = Pattern.compile(trackingNumberRegex);
+        matcher = trackingNumberRegexPattern.matcher(trackingNumber);
+        boolean trackingNumberMatches = matcher.matches();
+
+        //Store the result of all checks
+        boolean isValid = true;
+
+        //Check if wwid is incorrect and password and techname are blank/null
+        if (!fullSCTaskMatches && !trackingNumberMatches) {
+            serviceNowController.alertLabel.setText(sctaskError + "\n" + trackingError);
+            serviceNowController.taskNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.trackingNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect and password is blank
+        } else if (!shortSCTaskMatches && !trackingNumberMatches) {
+            serviceNowController.alertLabel.setText(sctaskError + "\n" + trackingError);
+            serviceNowController.taskNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.trackingNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect and tech name is null
+        } else if (!trackingNumberMatches) {
+            serviceNowController.alertLabel.setText(trackingError);
+            serviceNowController.taskNumber.setStyle(null);
+            serviceNowController.trackingNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.alertLabel.setVisible(true);
+            isValid = false;
+        } else if (!shortSCTaskMatches && !fullSCTaskMatches) {
+            serviceNowController.alertLabel.setText(sctaskError);
+            serviceNowController.taskNumber.setStyle("-fx-border-color: red;");
+            serviceNowController.trackingNumber.setStyle(null);
+            serviceNowController.alertLabel.setVisible(true);
+            isValid = false;
+            //Set styles to default and hide label
+        } else {
+            serviceNowController.taskNumber.setStyle(null);
+            serviceNowController.trackingNumber.setStyle(null);
+            serviceNowController.alertLabel.setVisible(false);
+        }
+        return isValid;
+    }
 
     public boolean serviceNowLoginValidation() {
 
@@ -125,9 +247,7 @@ public class InputValidator {
         String userPass = serviceNowLoginDialogController.serviceNowPassField.getText();
         String techName = serviceNowLoginDialogController.techNameComboBox.getValue();
 
-        //Error Strings
-        String wwidError = "* WWID must be 5 character and include 2 letters followed by 3 digits";
-        String passwordError = "* Please enter a password";
+        //Error String
         String techNameError = "* Please select a tech name";
 
         //Regex to limit WWID to alphanumeric characters with 2 letters followed by 3 digits
@@ -213,12 +333,93 @@ public class InputValidator {
         return isValid;
     }
 
-    /*
-    public boolean serviceNowFormValidation(){
+    public boolean addNewIssueValidation() {
 
+        //Retrieve values from form fields
+        String machineIssue = newIssueDialogController.newMachineIssue.getText();
+        String troubleshootingSteps = newIssueDialogController.newTroubleshootingSteps.getText();
+        String partNeeded = newIssueDialogController.newPartNeededComboBox.getValue();
+
+        //Error String
+        String machineIssueError = "* Please enter a machine issue";
+        String troubleshootingStepsError = "* Please enter troubleshooting steps";
+        String partNeededError = "* Please make a part selection";
+
+        //Store the result of all checks
+        boolean isValid = true;
+
+        //Check if wwid is incorrect and password and techname are blank/null
+        if (machineIssue.equals("") && troubleshootingSteps.equals("") && partNeeded == null) {
+            newIssueDialogController.alertLabel.setText(machineIssueError + "\n" + troubleshootingStepsError + "\n" + partNeededError);
+            newIssueDialogController.newMachineIssue.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newTroubleshootingSteps.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newPartNeededComboBox.setStyle("-fx-border-color: red;");
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect and password is blank
+        } else if (machineIssue.equals("") && troubleshootingSteps.equals("")) {
+            newIssueDialogController.alertLabel.setText(machineIssueError + "\n" + troubleshootingStepsError);
+            newIssueDialogController.newMachineIssue.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newTroubleshootingSteps.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newPartNeededComboBox.setStyle(null);
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect and tech name is null
+        } else if (machineIssue.equals("") && partNeeded == null) {
+            newIssueDialogController.alertLabel.setText(machineIssueError + "\n" + partNeededError);
+            newIssueDialogController.newMachineIssue.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newTroubleshootingSteps.setStyle(null);
+            newIssueDialogController.newPartNeededComboBox.setStyle("-fx-border-color: red;");
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if password is blank and tech name is null
+        } else if (troubleshootingSteps.equals("") && partNeeded == null) {
+            newIssueDialogController.alertLabel.setText(troubleshootingStepsError + "\n" + partNeededError);
+            newIssueDialogController.newMachineIssue.setStyle(null);
+            newIssueDialogController.newTroubleshootingSteps.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newPartNeededComboBox.setStyle("-fx-border-color: red;");
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if wwid is incorrect
+        } else if (machineIssue.equals("")) {
+            newIssueDialogController.alertLabel.setText(machineIssueError);
+            newIssueDialogController.newMachineIssue.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newTroubleshootingSteps.setStyle(null);
+            newIssueDialogController.newPartNeededComboBox.setStyle(null);
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if password is blank
+        } else if (troubleshootingSteps.equals("")) {
+            newIssueDialogController.alertLabel.setText(troubleshootingStepsError);
+            newIssueDialogController.newMachineIssue.setStyle(null);
+            newIssueDialogController.newTroubleshootingSteps.setStyle("-fx-border-color: red;");
+            newIssueDialogController.newPartNeededComboBox.setStyle(null);
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Check if tech name is null
+        } else if (partNeeded == null) {
+            newIssueDialogController.alertLabel.setText(partNeededError);
+            newIssueDialogController.newMachineIssue.setStyle(null);
+            newIssueDialogController.newTroubleshootingSteps.setStyle(null);
+            newIssueDialogController.newPartNeededComboBox.setStyle("-fx-border-color: red;");
+            newIssueDialogController.alertLabel.setVisible(true);
+            isValid = false;
+
+            //Set styles to default and hide label
+        } else {
+            newIssueDialogController.newMachineIssue.setStyle(null);
+            newIssueDialogController.newTroubleshootingSteps.setStyle(null);
+            newIssueDialogController.newPartNeededComboBox.setStyle(null);
+            newIssueDialogController.alertLabel.setVisible(false);
+        }
+
+        return isValid;
     }
-
-     */
-
 
 }

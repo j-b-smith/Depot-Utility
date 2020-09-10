@@ -41,8 +41,10 @@ public class ServiceNowLoginDialogController  implements Initializable {
         //Get controller
         ServiceNowController controller = loader.getController();
 
+        //Create input validator
         InputValidator validator = new InputValidator(this);
 
+        //Validate
         if (validator.serviceNowLoginValidation()) {
             //Call complete tasks on separate thread
             taskThread = new Thread(() -> {

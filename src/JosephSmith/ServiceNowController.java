@@ -35,6 +35,7 @@ public class ServiceNowController implements Initializable {
     public TableColumn<Object, Object> sctaskTrackingColumn;
     public ArrayList<SCTask> taskObjectList = new ArrayList<>();
     public TextField userWWID;
+    public Label alertLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -45,24 +46,30 @@ public class ServiceNowController implements Initializable {
 
     public void addToQueue(){
 
-        //Create new SCTask object and add to list
-        taskObjectList.add(new SCTask(taskNumber.getText(), trackingNumber.getText(), workNotes.getText()));
+        //Get input validator
+        InputValidator validator = new InputValidator(this);
 
-        //Cast list to observable list
-        ObservableList<SCTask> taskData = FXCollections.observableArrayList(taskObjectList);
+        //Validate
+        if (validator.serviceNowFormValidation()) {
+            //Create new SCTask object and add to list
+            taskObjectList.add(new SCTask(taskNumber.getText(), trackingNumber.getText(), workNotes.getText()));
 
-        //Set cell factories
-        sctaskNumColumn.setCellValueFactory(
-                new PropertyValueFactory<>("taskNumber"));
-        sctaskTrackingColumn.setCellValueFactory(
-                new PropertyValueFactory<>("trackingNumber"));
-        sctaskNotesColumn.setCellValueFactory(
-                new PropertyValueFactory<>("workNotes"));
+            //Cast list to observable list
+            ObservableList<SCTask> taskData = FXCollections.observableArrayList(taskObjectList);
 
-        //Populate table
-        scTaskTable.setItems(taskData);
+            //Set cell factories
+            sctaskNumColumn.setCellValueFactory(
+                    new PropertyValueFactory<>("taskNumber"));
+            sctaskTrackingColumn.setCellValueFactory(
+                    new PropertyValueFactory<>("trackingNumber"));
+            sctaskNotesColumn.setCellValueFactory(
+                    new PropertyValueFactory<>("workNotes"));
 
-        onAddTaskPressed();
+            //Populate table
+            scTaskTable.setItems(taskData);
+
+            onAddTaskPressed();
+        }
 
     }
 
@@ -99,10 +106,6 @@ public class ServiceNowController implements Initializable {
         taskObjectList.clear();
         ObservableList<SCTask> taskData = FXCollections.observableArrayList(taskObjectList);
         scTaskTable.setItems(taskData);
-    }
-
-    public void completeTasksButton() throws IOException, InterruptedException {
-        openLoginDialog();
     }
 
     public void openLoginDialog() throws IOException, InterruptedException {

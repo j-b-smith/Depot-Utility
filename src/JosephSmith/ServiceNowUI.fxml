@@ -49,7 +49,10 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
         </TableView>
-        <Button text="Remove Selected Task" onAction="#removeTask"/>
+        <HBox spacing="20">
+            <Button text="Remove Selected Task" onAction="#removeTask"/>
+            <Label fx:id="alertLabel" textFill="red" visible="false"/>
+        </HBox>
     </VBox>
     <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
         <Button text="Complete Tasks" onAction="#openLoginDialog"/>

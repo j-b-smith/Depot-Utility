@@ -29,29 +29,20 @@ public class NewIssueDialogController implements Initializable {
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
-        //Update combo box
-        //partsList.add(addNewPartInput.getText());
-        //ObservableList<String> partsComboList = FXCollections.observableArrayList(partsList);
+        //Get input validator
+        InputValidator validator = new InputValidator(this);
 
-        //Check if add new part is selected and write information to description sheet
-        if (newPartNeededComboBox.getValue().equals("Add New Part")) {
-            database.addNewRowToIssueDescriptions(newMachineIssue.getText(),
-                    newTroubleshootingSteps.getText(), addNewPartInput.getText());
-        } else {
+        if (validator.addNewIssueValidation()) {
             database.addNewRowToIssueDescriptions(newMachineIssue.getText(),
                     newTroubleshootingSteps.getText(), newPartNeededComboBox.getValue());
+
+            database.closeConnection();
+
+            //Clear fields and hide New Part fields
+            newMachineIssue.clear();
+            newTroubleshootingSteps.clear();
+            newPartNeededComboBox.getSelectionModel().clearSelection();
         }
-
-        database.closeConnection();
-
-
-        //Clear fields and hide New Part fields
-        newMachineIssue.clear();
-        newTroubleshootingSteps.clear();
-        newPartNeededComboBox.getSelectionModel().clearSelection();
-        addNewPartLabel.setVisible(false);
-        addNewPartInput.setVisible(false);
-        addNewPartInput.setDisable(true);
 
 
     }
@@ -67,8 +58,6 @@ public class NewIssueDialogController implements Initializable {
         //Create lists from description sheet
         partsList = database.createUniqueValueList("Part_Needed", "IssueDescriptions");
 
-        //Add option to input a new part
-        partsList.add("Add New Part");
 
         //Populate Machine Issue Combo Box
         ObservableList<String> partsComboList = FXCollections.observableList(partsList);
@@ -76,26 +65,5 @@ public class NewIssueDialogController implements Initializable {
 
         //Close database connection
         database.closeConnection();
-    }
-
-    /*
-    Display New Part label and Input if the combo box selection is
-    Hide the Label and Input if anything else is selected
-     */
-    public void partComboBoxChange(){
-       try {
-           if (newPartNeededComboBox.getSelectionModel().getSelectedItem().equals("Add New Part")) {
-               addNewPartLabel.setVisible(true);
-               addNewPartInput.setVisible(true);
-               addNewPartInput.setDisable(false);
-           } else {
-               addNewPartLabel.setVisible(false);
-               addNewPartInput.setVisible(false);
-               addNewPartInput.setDisable(true);
-           }
-       } catch (NullPointerException e){
-           e.printStackTrace();
-           e.getCause();
-       }
     }
 }
