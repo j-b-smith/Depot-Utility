@@ -5,40 +5,35 @@
 
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
 <GridPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="JosephSmith.NewIssueDialogController"
-            prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10">
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="JosephSmith.NewIssueDialogController"
+          prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10" gridLinesVisible="true">
             <padding>
                 <Insets top="20" bottom="20" left="20" right="20"/>
             </padding>
 
             <rowConstraints>
                 <RowConstraints percentHeight="10"/>
-                <RowConstraints percentHeight="10"/>
-                <RowConstraints percentHeight="50"/>
+                <RowConstraints percentHeight="60"/>
                 <RowConstraints percentHeight="20"/>
                 <RowConstraints percentHeight="10"/>
             </rowConstraints>
-            <Label text="Add New Issue" GridPane.columnIndex="0" GridPane.rowIndex="0"
-            GridPane.columnSpan="2" GridPane.halignment="CENTER">
-                <font>
-                    <Font size="24"/>
-                </font>
-            </Label>
-            <Label text="Enter Machine Issue: " GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Label text="Enter Troubleshooting Steps: " GridPane.columnIndex="0" GridPane.rowIndex="2" wrapText="true"/>
-            <Label text="Select Part Needed: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+            <Label text="Enter Machine Issue: " GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="formLabel"/>
+            <Label text="Enter Troubleshooting Steps: " GridPane.columnIndex="0" GridPane.rowIndex="1" wrapText="true" styleClass="formLabel" GridPane.valignment="TOP"/>
+            <Label text="Select Part Needed: " GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="formLabel" GridPane.valignment="TOP"/>
 
 
 
-            <TextField fx:id="newMachineIssue" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS"/>
-            <TextArea fx:id="newTroubleshootingSteps" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" wrapText="true"/>
-            <HBox  GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.hgrow="ALWAYS" spacing="20">
+            <TextField fx:id="newMachineIssue" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.hgrow="ALWAYS"/>
+            <TextArea fx:id="newTroubleshootingSteps" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" wrapText="true"/>
+            <HBox  GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.hgrow="ALWAYS" spacing="20">
                 <ComboBox fx:id="newPartNeededComboBox"/>
-                <Label fx:id="alertLabel" textFill="red"/>
+                <Label fx:id="alertLabel" styleClass="alertLabel" textFill="red"/>
             </HBox>
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" alignment="BOTTOM_RIGHT">
-                <Button fx:id="addNewMachineIssueButton" text="Add Issue" onAction="#addNewMachineIssue"/>
+            <HBox GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="BOTTOM_RIGHT">
+                <JFXButton buttonType="RAISED" styleClass="jfxButton" fx:id="addNewMachineIssueButton" text="Add Issue" onAction="#addNewMachineIssue"/>
             </HBox>
         </GridPane>

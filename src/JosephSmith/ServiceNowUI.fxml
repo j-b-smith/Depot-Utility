@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.ServiceNowController"
@@ -24,18 +25,18 @@
     </padding>
 
     <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
-        <Label text="SCTASK: " style="-fx-font-weight: bold;"/>
+        <Label text="SCTASK: " styleClass="formLabel"/>
         <TextField fx:id="taskNumber" onKeyPressed="#onTaskKeyEnter"/>
-        <Label text="Tracking Number: " style="-fx-font-weight: bold;"/>
+        <Label text="Tracking Number: " styleClass="formLabel"/>
         <TextField fx:id="trackingNumber"/>
-        <Label text="Work Notes: " style="-fx-font-weight: bold;"/>
+        <Label text="Work Notes: " styleClass="formLabel"/>
         <TextArea fx:id="workNotes" wrapText="true"/>
 
-        <Button text="Add Task" onAction="#addToQueue"/>
+        <JFXButton styleClass="jfxButton" id="jfxButton" buttonType="RAISED" text="Add Task" onAction="#addToQueue"/>
     </VBox>
 
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10" >
-        <Label text="Task Queue" style="-fx-font-weight: bold;"/>
+        <Label text="Task Queue" styleClass="formLabel"/>
         <TableView fx:id="scTaskTable" VBox.vgrow="ALWAYS">
             <placeholder>
                 <Label text="No Tasks In Queue"/>
@@ -50,12 +51,12 @@
             </columnResizePolicy>
         </TableView>
         <HBox spacing="20">
-            <Button text="Remove Selected Task" onAction="#removeTask"/>
-            <Label fx:id="alertLabel" textFill="red" visible="false"/>
+            <JFXButton styleClass="jfxButton" buttonType="RAISED" text="Remove Selected Task" onAction="#removeTask"/>
+            <Label styleClass="alertLabel" fx:id="alertLabel" textFill="red" visible="false"/>
         </HBox>
     </VBox>
     <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
-        <Button text="Complete Tasks" onAction="#openLoginDialog"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" text="Complete Tasks" onAction="#openLoginDialog"/>
     </HBox>
 
 </GridPane>

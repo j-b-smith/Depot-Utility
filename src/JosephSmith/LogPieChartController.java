@@ -82,10 +82,8 @@ public class LogPieChartController implements Initializable {
         //Convert pie chart data to observable list
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieChartDataTemp);
 
-        //Set title, data, and legend position
-        logPieChart.setTitle("Repairs By Part");
+        //Set data
         logPieChart.setData(pieChartData);
-        logPieChart.setLegendSide(Side.LEFT);
         database.closeConnection();
 
     }
@@ -115,10 +113,8 @@ public class LogPieChartController implements Initializable {
         //Convert pie chart data to observable list
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(pieChartDataTemp);
 
-        //Set title, data, and legend position
-        logPieChart.setTitle("Repairs By Model");
+        //Set data
         logPieChart.setData(pieChartData);
-        logPieChart.setLegendSide(Side.LEFT);
         database.closeConnection();
     }
 }

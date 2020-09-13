@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.ServiceNowLoginDialogController"
@@ -25,7 +26,7 @@
         <RowConstraints percentHeight="20"/>
     </rowConstraints>
 
-    <Label text="Service Now Login Credentials" GridPane.columnSpan="3" GridPane.halignment="CENTER" style="-fx-font-weight: bold;">
+    <Label text="Service Now Login Credentials" GridPane.columnSpan="3" GridPane.halignment="CENTER" styleClass="formLabel">
         <padding>
             <Insets bottom="10"/>
         </padding>
@@ -33,9 +34,9 @@
 
 
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="20">
-        <Label text="WWID: " style="-fx-font-weight: bold;"/>
-        <Label text="Password: " style="-fx-font-weight: bold;"/>
-        <Label text='"Assign To" Name: ' wrapText="true" style="-fx-font-weight: bold;"/>
+        <Label text="WWID: " styleClass="formLabel"/>
+        <Label text="Password: " styleClass="formLabel"/>
+        <Label text='"Assign To" Name: ' wrapText="true" styleClass="formLabel"/>
     </VBox>
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS">
         <TextField fx:id="serviceNowWwidField"/>
@@ -46,14 +47,14 @@
         <padding>
             <Insets top="20"/>
         </padding>
-        <Label fx:id="alertLabel" textFill="red" visible="false" wrapText="true"/>
+        <Label styleClass="alertLabel" fx:id="alertLabel" textFill="red" visible="false" wrapText="true"/>
     </HBox>
     <HBox GridPane.rowIndex="3" GridPane.columnIndex="2" GridPane.halignment="RIGHT" spacing="10">
         <padding>
             <Insets top="20"/>
         </padding>
-        <Button fx:id="loginButton" text="Login" onAction="#completeTasks" style="-fx-font-weight: bold;"/>
-        <Button fx:id="loginCancelButton" text="Cancel" onAction="#returnToServiceNowForm" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#completeTasks" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToServiceNowForm" style="-fx-font-weight: bold;"/>
     </HBox>
 
 </GridPane>

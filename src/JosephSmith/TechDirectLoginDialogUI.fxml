@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.TechDirectLoginDialogController"
@@ -22,7 +23,7 @@
         <Insets top="20" bottom="20" left="20" right="20"/>
     </padding>
 
-    <Label text="Dell Tech Direct Login Credentials" GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" style="-fx-font-weight: bold;">
+    <Label text="Dell Tech Direct Login Credentials" GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" styleClass="formLabel">
         <padding>
             <Insets bottom="10"/>
         </padding>
@@ -30,22 +31,22 @@
 
 
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0" spacing="10">
-        <Label text="WWID: " style="-fx-font-weight: bold;"/>
-        <Label text="Password: " style="-fx-font-weight: bold;"/>
+        <Label text="WWID: " styleClass="formLabel"/>
+        <Label text="Password: " styleClass="formLabel"/>
     </VBox>
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="10" GridPane.hgrow="ALWAYS">
         <TextField fx:id="techDirectWwidField"/>
         <PasswordField fx:id="techDirectPassField"/>
     </VBox>
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
-        <Label fx:id="alertLabel" textFill="red" visible="false"/>
+        <Label styleClass="alertLabel" fx:id="alertLabel" textFill="red" visible="false"/>
     </HBox>
     <HBox GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.halignment="RIGHT" spacing="10">
         <padding>
             <Insets top="20"/>
         </padding>
-        <Button fx:id="loginButton" text="Login" onAction="#performWarranty" style="-fx-font-weight: bold;"/>
-        <Button fx:id="loginCancelButton" text="Cancel" onAction="#returnToWarrantyForm" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#performWarranty" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToWarrantyForm" style="-fx-font-weight: bold;"/>
     </HBox>
 
 </GridPane>

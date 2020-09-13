@@ -9,20 +9,13 @@
             fx:controller="JosephSmith.logUIController"
             prefHeight="400.0" prefWidth="600.0" vgap="15">
 
-    <Label text="Warranty Repair History" GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="BASELINE">
-        <font>
-            <Font name="Arial" size="28"/>
-        </font>
-        <padding>
-            <Insets top="20"/>
-        </padding>
-    </Label>
-
     <rowConstraints>
         <RowConstraints percentHeight="10"/>
         <RowConstraints percentHeight="85"/>
     </rowConstraints>
-
+    <padding>
+        <Insets left="50"/>
+    </padding>
 
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"  GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS"  spacing="10">
 
@@ -50,7 +43,7 @@
          </TableView>
 
         <HBox GridPane.columnIndex="0" GridPane.rowIndex="2" alignment="BOTTOM_RIGHT" spacing="10">
-            <Label text="Search:" style="-fx-font-weight: bold;"/>
+            <Label text="Search:" styleClass="formLabel"/>
             <TextField fx:id="logSearch" onKeyPressed="#displayLogSearchResult"/>
         </HBox>
 

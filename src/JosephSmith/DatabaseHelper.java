@@ -1,6 +1,8 @@
 package JosephSmith;
 
 import javafx.collections.ObservableList;
+import org.openqa.selenium.remote.ProtocolHandshake;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +14,19 @@ public class DatabaseHelper {
     //Constructor
     public DatabaseHelper(){}
 
+    //Connect to local database
+    String localSQLServer = "jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility";
+    String localUser = "sa";
+    String localPass = "Kayla0626!$";
 
+    //Connect to SQL Work Server
+    String workServerSQLString = "jdbc:sqlserver://SIWPSQL5001\\SQLEXPRESS.database.windows.net:58226;"
+            + "database=Depot;"
+            + "user=da;"
+            + "password=Depot$07Depot$07;"
+            + "encrypt=true;"
+            + "trustServerCertificate=true;"
+            + "loginTimeout=30;";
 
     //Connect to SQLExpress database
     public void connect(){
@@ -95,32 +109,6 @@ public class DatabaseHelper {
     }
 
     /*
-    Resets the indexes of a given table to the count of the row +1
-    Allows for iteration through rowid after adding and removing rows
-     */
-    /*
-    public void reIndexTable(String tableName){
-        try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("UPDATE " + tableName + " SET ROWID = (\n" +
-                    "  SELECT COUNT(*)+1\n" +
-                    "  FROM " + tableName +  " w\n" +
-                    "  WHERE " + tableName + ".ROWID>w.ROWID\n" +
-                    ");");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-     */
-
-    public void reIndexTable(String tableName){
-        try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("ALTER TABLE " + tableName + " DROP COLUMN rowid; ALTER TABLE " + tableName + " ADD rowid int IDENTITY;");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    /*
     Get cell value by value
      */
     public String getCellValue(String returnColumn, String tableName, String sortColumn, String sortValue) {
@@ -144,6 +132,48 @@ public class DatabaseHelper {
     }
 
     /*
+    Get machines with multiple issues
+    */
+    public ArrayList<WarrantyMachine> getDuplicateMachines(String serviceTag) {
+
+        ArrayList<WarrantyMachine> duplicateMachines = new ArrayList<>();
+
+        try(Statement statement = connection.createStatement()) {
+            //Get result set
+            ResultSet tempValue = statement.executeQuery
+                    ("SELECT * FROM WarrantyMachines WHERE Service_Tag = '" + serviceTag + "';");
+
+            //Loop through rows retuned by result set
+            while (tempValue.next()) {
+                //Get cell value as string
+                String machineIssue = tempValue.getString("Machine_issue");
+                String troubleshootingSteps = tempValue.getString("Troubleshooting_Steps");
+                String partNeeded = tempValue.getString("Part_Needed");
+                String serialNumber = tempValue.getString("Serial_Number");
+
+                //Create WarrantyMachine object
+                WarrantyMachine warrantyMachine = new WarrantyMachine(serviceTag, machineIssue, troubleshootingSteps, partNeeded, serialNumber);
+
+                //Add warranty machine to list
+                duplicateMachines.add(warrantyMachine);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return duplicateMachines;
+    }
+
+    public void reIndexTable(String tableName){
+        try(Statement statement = connection.createStatement()){
+            statement.executeUpdate("ALTER TABLE " + tableName + " DROP COLUMN rowid; ALTER TABLE " + tableName + " ADD rowid int IDENTITY;");
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    /*
     Get number of rows that contain a specific value
      */
     public int getValueCount(String tableName, String column, String value){
@@ -164,16 +194,6 @@ public class DatabaseHelper {
         return count;
     }
 
-    //Clear table
-    public void clearTable(String tableName){
-
-        try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("DELETE FROM " + tableName + ";");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
     /*
     Add new row to table
      */
@@ -192,7 +212,7 @@ public class DatabaseHelper {
     public void addNewRowToWarrantyMachinesSerial(WarrantyMachine machine) {
 
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Battery_Serial_Number) " +
+            statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Serial_Number) " +
                     "VALUES ('" + machine.serviceTag + "' , '" + machine.machineIssue + "' , '"
                     + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' , '" + machine.serialNumber + "');");
 
@@ -250,8 +270,7 @@ public class DatabaseHelper {
 
         for (WarrantyMachine machine : list) {
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("DELETE FROM WarrantyMachines WHERE (Service_Tag ='" + machine.serviceTag + "' AND Machine_Issue ='"
-                        + machine.machineIssue + "' AND Part_Needed ='" + machine.partNeeded + "');");
+                statement.executeUpdate("DELETE FROM WarrantyMachines WHERE Service_Tag ='" + machine.serviceTag + "';");
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -310,7 +329,7 @@ public class DatabaseHelper {
             String machineIssue = database.getCellValue("Machine_Issue", "WarrantyMachines", i);
             String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i);
             String partNeeded = database.getCellValue("Part_Needed", "WarrantyMachines", i);
-            String serialNumber = database.getCellValue("Battery_Serial_Number", "WarrantyMachines", i);
+            String serialNumber = database.getCellValue("Serial_Number", "WarrantyMachines", i);
 
 
             //Check if part needed is a battery
