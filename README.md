@@ -24,13 +24,8 @@ The Service Now tab is newly added and is designed to allow a user to automatica
 
 **Figure 1:**
 
-![image](https://user-images.githubusercontent.com/26418249/92668220-38ecee80-f2dc-11ea-95ab-dbd28088ee98.png)
+![Tech Direct Login Gif](https://user-images.githubusercontent.com/26418249/93030327-2a5e4a00-f5f0-11ea-8dde-14ea2490c759.gif)
 
-## Tech Direct Login Input Validation:
-
-**Figure 1:**
-
-![image](https://user-images.githubusercontent.com/26418249/92668235-41ddc000-f2dc-11ea-8ad8-1fbddce77feb.png)
 
 ## Add New Issue Form:
 
@@ -61,10 +56,5 @@ The Service Now tab is newly added and is designed to allow a user to automatica
 
 **Figure 1:**
 
-![image](https://user-images.githubusercontent.com/26418249/92668616-4f477a00-f2dd-11ea-95dd-19ade6339b89.png)
+![Service Now Login Gif](https://user-images.githubusercontent.com/26418249/93030339-3c3fed00-f5f0-11ea-9a27-e8a5ed0f796c.gif)
 
-## Input Validation:
-
-**Figure 1:**
-
-![image](https://user-images.githubusercontent.com/26418249/92668622-553d5b00-f2dd-11ea-9354-67a61162aa06.png)
