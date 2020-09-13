@@ -14,19 +14,7 @@ public class DatabaseHelper {
     //Constructor
     public DatabaseHelper(){}
 
-    //Connect to local database
-    String localSQLServer = "jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility";
-    String localUser = "sa";
-    String localPass = "Kayla0626!$";
 
-    //Connect to SQL Work Server
-    String workServerSQLString = "jdbc:sqlserver://SIWPSQL5001\\SQLEXPRESS.database.windows.net:58226;"
-            + "database=Depot;"
-            + "user=da;"
-            + "password=Depot$07Depot$07;"
-            + "encrypt=true;"
-            + "trustServerCertificate=true;"
-            + "loginTimeout=30;";
 
     //Connect to SQLExpress database
     public void connect(){

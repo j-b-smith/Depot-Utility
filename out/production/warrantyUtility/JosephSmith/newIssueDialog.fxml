@@ -9,7 +9,7 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.NewIssueDialogController"
-          prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10" gridLinesVisible="true">
+          prefHeight="300.0" prefWidth="600.0" hgap="10" vgap="10">
             <padding>
                 <Insets top="20" bottom="20" left="20" right="20"/>
             </padding>
