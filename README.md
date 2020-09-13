@@ -41,6 +41,7 @@ The Service Now tab is newly added and is designed to allow a user to automatica
 ## Warranty History:
 
 **Figure 1:**
+
 ![Warranty History Gif](https://user-images.githubusercontent.com/26418249/93029857-668fab80-f5ec-11ea-920e-3c04750f081d.gif)
 
 ## Warranty History Visual:
