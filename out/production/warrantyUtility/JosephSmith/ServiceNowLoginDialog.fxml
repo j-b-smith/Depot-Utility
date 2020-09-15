@@ -8,7 +8,7 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.ServiceNowLoginDialogController"
-          prefHeight="80" prefWidth="700" hgap="10">
+          prefHeight="80" prefWidth="700" hgap="10" styleClass="dialogPane">
     <padding>
         <Insets top="20" bottom="20" left="20" right="20"/>
     </padding>
@@ -53,8 +53,8 @@
         <padding>
             <Insets top="20"/>
         </padding>
-        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#completeTasks" style="-fx-font-weight: bold;"/>
-        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToServiceNowForm" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#completeTasks"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToServiceNowForm"/>
     </HBox>
 
 </GridPane>

@@ -1,8 +1,7 @@
 package JosephSmith;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.openqa.selenium.remote.ProtocolHandshake;
-
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,8 +12,6 @@ public class DatabaseHelper {
 
     //Constructor
     public DatabaseHelper(){}
-
-
 
     //Connect to SQLExpress database
     public void connect(){
@@ -35,65 +32,10 @@ public class DatabaseHelper {
         }
     }
 
-    /*
-    Retrieve a row from the LogSheet by index as a Log Entry object for Log Table
-     */
-    public LogEntry getLogRow(int index){
-
-        return new LogEntry(getCellValue("Date", "MachineLog", index),
-                (getCellValue("Request_Number", "MachineLog", index)),
-                (getCellValue("Service_Tag", "MachineLog", index)),
-                (getCellValue("Model", "MachineLog", index)),
-                (getCellValue("Machine_Issue", "MachineLog", index)),
-                (getCellValue("Part_Needed", "MachineLog", index)));
-    }
 
     //Convert the log entry to a string for filtering
     public String logEntryToString(LogEntry entry){
         return entry.date + " " + entry.requestNumber + " " + entry.serviceTag + " " + entry.model + " " + entry.machineIssue + " " + entry.partNeeded;
-    }
-
-    //Get the number of rows in a table
-    public int getRowCount(String tableName){
-        int count = 0;
-        try (Statement statement = connection.createStatement()){
-            //Get Result set
-            ResultSet countSet = statement.
-                    executeQuery("SELECT COUNT(*) AS count FROM " + tableName + ";");
-            //Move cursor to first position
-            countSet.next();
-
-            //Get count value
-            count = countSet.getInt("count");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
-    /*
-    Get cell value by index
-     */
-    public String getCellValue(String columnName, String tableName, int index) {
-
-        //Increment index for database use
-        index +=1;
-        String value = null;
-
-        try(Statement statement = connection.createStatement()) {
-            //Get result set
-            ResultSet tempValue = statement.executeQuery
-                    ("SELECT " + columnName + " FROM " + tableName + " WHERE rowid= " + index + ";");
-            //Move cursor to first position
-            tempValue.next();
-
-            //Get cell value as string
-            value = tempValue.getString(columnName);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return value;
     }
 
     /*
@@ -153,12 +95,70 @@ public class DatabaseHelper {
         return duplicateMachines;
     }
 
-    public void reIndexTable(String tableName){
-        try(Statement statement = connection.createStatement()){
-            statement.executeUpdate("ALTER TABLE " + tableName + " DROP COLUMN rowid; ALTER TABLE " + tableName + " ADD rowid int IDENTITY;");
-        } catch (SQLException e){
+    /*
+    Get machines with multiple issues
+    */
+    public ObservableList<WarrantyMachine> getWarrantyMachines() {
+
+        ArrayList<WarrantyMachine> warrantyMachines = new ArrayList<>();
+
+        try(Statement statement = connection.createStatement()) {
+            //Get result set
+            ResultSet tempValue = statement.executeQuery
+                    ("SELECT * FROM WarrantyMachines;");
+
+            //Loop through rows retuned by result set
+            while (tempValue.next()) {
+
+                WarrantyMachine warrantyMachine = new WarrantyMachine(tempValue.getString("Service_Tag"),
+                                                                    tempValue.getString("Machine_Issue"),
+                                                                    tempValue.getString("Troubleshooting_Steps"),
+                                                                    tempValue.getString("Part_Needed"),
+                                                                    tempValue.getString("Serial_Number"));
+                //Add warranty machine to list
+                warrantyMachines.add(warrantyMachine);
+            }
+
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return FXCollections.observableArrayList(warrantyMachines);
+    }
+
+    /*
+    Get log machines
+    */
+    public ObservableList<LogEntry> getLogMachines() {
+
+        ArrayList<LogEntry> logMachines = new ArrayList<>();
+
+        try(Statement statement = connection.createStatement()) {
+            //Get result set
+            ResultSet tempValue = statement.executeQuery
+                    ("SELECT * FROM MachineLog;");
+
+            //Loop through rows retuned by result set
+            while (tempValue.next()) {
+
+                LogEntry logMachine = new LogEntry (tempValue.getString("Date"),
+                                                tempValue.getString("Request_Number"),
+                                                tempValue.getString("Service_Tag"),
+                                                tempValue.getString("Model"),
+                                                tempValue.getString("Machine_Issue"),
+                                                tempValue.getString("Part_Needed"));
+
+                //Add warranty machine to list
+                logMachines.add(logMachine);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return FXCollections.observableArrayList(logMachines);
     }
 
     /*
@@ -187,22 +187,11 @@ public class DatabaseHelper {
      */
     public void addNewRowToWarrantyMachines(WarrantyMachine machine) {
 
+
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed) " +
                     "VALUES ('" + machine.serviceTag + "' , '" + machine.machineIssue + "' , '"
                     + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' );");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addNewRowToWarrantyMachinesSerial(WarrantyMachine machine) {
-
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Serial_Number) " +
-                    "VALUES ('" + machine.serviceTag + "' , '" + machine.machineIssue + "' , '"
-                    + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' , '" + machine.serialNumber + "');");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -256,6 +245,8 @@ public class DatabaseHelper {
      */
     public void removeRowsFromWarrantyMachines(ObservableList<WarrantyMachine> list){
 
+        //reIndexTable("WarrantyMachines");
+
         for (WarrantyMachine machine : list) {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("DELETE FROM WarrantyMachines WHERE Service_Tag ='" + machine.serviceTag + "';");
@@ -266,18 +257,9 @@ public class DatabaseHelper {
         }
     }
 
-    public void removeRowFromWarrantyMachines(WarrantyMachine machine){
-
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM WarrantyMachines WHERE (Service_Tag ='" + machine.serviceTag + "' AND Machine_Issue ='"
-                    + machine.machineIssue + "' AND Part_Needed ='" + machine.partNeeded + "');");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getPartDescription(String model, String part){
+
+        //Format model to match table columns
        model = model.replace(" ", "_");
        model = model.replace("-", "_");
 
@@ -295,48 +277,6 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
         return value;
-    }
-
-    public ArrayList<WarrantyMachine> getWarrantyMachines(){
-
-        //Create list of warrantyMachine objects
-        ArrayList<WarrantyMachine> warrantyMachineList = new ArrayList<>();
-
-
-        //Create database object and connect
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
-
-        //Get the number of warranty machines in the database
-        int rowCount = database.getRowCount("WarrantyMachines");
-
-        //Create list of warranty machines from database
-        for (int i = 0; i < rowCount; i++) {
-
-            String serviceTag = database.getCellValue("Service_Tag", "WarrantyMachines", i);
-            String machineIssue = database.getCellValue("Machine_Issue", "WarrantyMachines", i);
-            String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "WarrantyMachines", i);
-            String partNeeded = database.getCellValue("Part_Needed", "WarrantyMachines", i);
-            String serialNumber = database.getCellValue("Serial_Number", "WarrantyMachines", i);
-
-
-            //Check if part needed is a battery
-            if (partNeeded.equals("Battery") || partNeeded.equals("Display, Monitor")) {
-
-                //Create warranty machine object with battery
-                WarrantyMachine warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                        troubleshootingSteps, partNeeded, serialNumber);
-                warrantyMachineList.add(warrantyMachine);
-            } else {
-
-                //Create warranty machine object without battery
-                WarrantyMachine warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                        troubleshootingSteps, partNeeded);
-                warrantyMachineList.add(warrantyMachine);
-            }
-        }
-        database.closeConnection();
-        return warrantyMachineList;
     }
 
     /*

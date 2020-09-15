@@ -113,6 +113,10 @@ public class ServiceNowController implements Initializable {
         Parent root = (Parent) loader.load();
         Stage stage = new Stage();
         Scene scene = new Scene(root);
+
+        URL stylesheetUrl = getClass().getResource("css.css");
+        scene.getStylesheets().add(stylesheetUrl.toExternalForm());
+
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Service Now Login");

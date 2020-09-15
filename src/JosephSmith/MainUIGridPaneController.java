@@ -131,6 +131,10 @@ public class MainUIGridPaneController implements Initializable {
         Parent root = loader.load();
         Stage stage = new Stage();
         Scene scene = new Scene(root);
+
+        URL stylesheetUrl = getClass().getResource("css.css");
+        scene.getStylesheets().add(stylesheetUrl.toExternalForm());
+
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Dell Tech Direct Login");
@@ -207,15 +211,9 @@ public class MainUIGridPaneController implements Initializable {
         DatabaseHelper database = new DatabaseHelper();
         database.connect();
 
-        //reindex warranty machine table
-        database.reIndexTable("WarrantyMachines");
-
-        //Get warranty machines from database
-        ArrayList<WarrantyMachine> listViewMachineList = database.getWarrantyMachines();
 
         //Convert object list to Observable list
-
-        ObservableList<WarrantyMachine> warrantyMachineListViewData = FXCollections.observableArrayList(listViewMachineList);
+        ObservableList<WarrantyMachine> warrantyMachineListViewData = database.getWarrantyMachines();
 
         if (warrantyMachineListViewData.size() > 0) {
             //Set machine quantity label
@@ -253,15 +251,14 @@ public class MainUIGridPaneController implements Initializable {
         database.connect();
 
         //Remove selected items from WarrantyMachines Table and List View
-        ObservableList<WarrantyMachine> selectedWarrantyMachines, currentMachinesData;
-        selectedWarrantyMachines = warrantyMachineTableView.getSelectionModel().getSelectedItems();
-        currentMachinesData = warrantyMachineTableView.getItems();
+        ObservableList<WarrantyMachine> selectedWarrantyMachines = warrantyMachineTableView.getSelectionModel().getSelectedItems();
 
         //Remove from warranty machine table
         database.removeRowsFromWarrantyMachines(selectedWarrantyMachines);
 
+        ObservableList<WarrantyMachine> currentMachinesData = database.getWarrantyMachines();
+
         //Update list view
-        currentMachinesData.removeAll(selectedWarrantyMachines);
         warrantyMachineTableView.setItems(currentMachinesData);
 
         //Set machine quantity label
@@ -296,9 +293,6 @@ public class MainUIGridPaneController implements Initializable {
      */
     public void writeWarrantyMachineTable() {
 
-        //Create Warranty Machine object
-        WarrantyMachine warrantyMachine;
-
         //Machine issue selection
         String machineIssueSelection = machineIssueComboBox.getValue();
 
@@ -312,24 +306,11 @@ public class MainUIGridPaneController implements Initializable {
         String partNeeded = database.getCellValue("Part_Needed", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
         String serviceTag = serviceTagTextField.getText();
 
-        //Check if part needed is a battery
         //Write machine object to database
-        if (partNeeded.equals("Battery") || partNeeded.equals("Display, Monitor")) {
+        database.addNewRowToWarrantyMachines(new WarrantyMachine(serviceTag, machineIssue,
+                troubleshootingSteps, partNeeded, serialNumberTextField.getText()));
 
-            warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                    troubleshootingSteps, partNeeded, serialNumberTextField.getText());
-
-            database.addNewRowToWarrantyMachinesSerial(warrantyMachine);
-        } else {
-
-            warrantyMachine = new WarrantyMachine(serviceTag, machineIssue,
-                    troubleshootingSteps, partNeeded);
-
-            database.addNewRowToWarrantyMachines(warrantyMachine);
         }
-
-        database.closeConnection();
-    }
 
     /*
     Using selenium, perform the warranty process and log the information to the database

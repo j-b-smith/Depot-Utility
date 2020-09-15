@@ -11,7 +11,7 @@
 <GridPane xmlns="http://javafx.com/javafx"
           xmlns:fx="http://javafx.com/fxml"
           fx:controller="JosephSmith.TechDirectLoginDialogController"
-          prefHeight="100" prefWidth="600" hgap="20" vgap="20">
+          prefHeight="100" prefWidth="600" hgap="20" vgap="20" styleClass="dialogPane">
 
     <rowConstraints>
         <RowConstraints percentHeight="25"/>
@@ -45,8 +45,8 @@
         <padding>
             <Insets top="20"/>
         </padding>
-        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#performWarranty" style="-fx-font-weight: bold;"/>
-        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToWarrantyForm" style="-fx-font-weight: bold;"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginButton" text="Login" onAction="#performWarranty"/>
+        <JFXButton styleClass="jfxButton" buttonType="RAISED" fx:id="loginCancelButton" text="Cancel" onAction="#returnToWarrantyForm"/>
     </HBox>
 
 </GridPane>

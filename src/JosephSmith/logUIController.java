@@ -9,7 +9,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import org.openqa.selenium.Keys;
+
 import java.net.URL;
 import java.util.*;
 
@@ -30,75 +34,13 @@ public class logUIController implements Initializable {
     }
 
     public void populateLogTable(){
-        //Connect to database
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
-        //Get Log row count
-        int logRowCount = database.getRowCount("MachineLog");
-
-        //Create temporary arrayList for LogEntries
-        ArrayList<LogEntry> temp = new ArrayList<>();
-
-        //Populate arrayList from database
-        for (int i = 0; i < logRowCount; i++) {
-            LogEntry row = database.getLogRow(i);
-            temp.add(row);
-        }
-
-        //Pass arrayList into observable list
-        ObservableList<LogEntry> logData = FXCollections.observableList(temp);
-
-        //Create cell factories for table
-        dateColumn.setCellValueFactory(
-                new PropertyValueFactory<>("date"));
-        requestNumberColumn.setCellValueFactory(
-                new PropertyValueFactory<>("requestNumber"));
-        serviceTagColumn.setCellValueFactory(
-                new PropertyValueFactory<>("serviceTag"));
-        modelColumn.setCellValueFactory(
-                new PropertyValueFactory<>("model"));
-        machineIssueColumn.setCellValueFactory(
-                new PropertyValueFactory<>("machineIssue"));
-        partNeededColumn.setCellValueFactory(
-                new PropertyValueFactory<>("partNeeded"));
-
-        //Set table data
-        logUITableView.setItems(logData);
-
-        database.closeConnection();
-    }
-
-    public void displayLogSearchResult() {
-
-        //Get text from search box for criteria
-        String searchCriteria = logSearch.getText();
-
-        //Verify search criteria is present
-        if (searchCriteria != null) {
             //Connect to database
             DatabaseHelper database = new DatabaseHelper();
             database.connect();
 
-            //Get Log row count
-            int logRowCount = database.getRowCount("MachineLog");
-
-            //Create temporary arrayList for LogEntries
-            ArrayList<LogEntry> tempLogData = new ArrayList<>();
-
-            //Populate arrayList from database
-            for (int i = 0; i < logRowCount; i++) {
-                LogEntry row = database.getLogRow(i);
-
-                //Get string value and add to log data if it contains search criteria
-                String logEntry = database.logEntryToString(row);
-                if (logEntry.toLowerCase().contains(searchCriteria.toLowerCase())){
-                    tempLogData.add(row);
-                }
-            }
-
             //Pass arrayList into observable list
-            ObservableList<LogEntry> logData = FXCollections.observableList(tempLogData);
+            ObservableList<LogEntry> logData = FXCollections.observableList(database.getLogMachines());
 
             //Create cell factories for table
             dateColumn.setCellValueFactory(
@@ -116,7 +58,57 @@ public class logUIController implements Initializable {
 
             //Set table data
             logUITableView.setItems(logData);
+
             database.closeConnection();
+    }
+
+    public void displayLogSearchResult(KeyEvent event) {
+
+
+        if (event.getCode().equals(KeyCode.ENTER)) {
+            //Get text from search box for criteria
+            String searchCriteria = logSearch.getText();
+
+            //Verify search criteria is present
+            if (searchCriteria != null) {
+                //Connect to database
+                DatabaseHelper database = new DatabaseHelper();
+                database.connect();
+
+                //Create temporary arrayList for LogEntries
+                ArrayList<LogEntry> logSearchResults = new ArrayList<>();
+
+                ObservableList<LogEntry> logMachines = database.getLogMachines();
+
+                //Populate arrayList from database
+                for (LogEntry entry : logMachines) {
+                    //Get string value and add to log data if it contains search criteria
+                    String logEntry = database.logEntryToString(entry);
+                    if (logEntry.toLowerCase().contains(searchCriteria.toLowerCase())) {
+                        logSearchResults.add(entry);
+                    }
+                }
+                //Pass arrayList into observable list
+                ObservableList<LogEntry> logData = FXCollections.observableList(logSearchResults);
+
+                //Create cell factories for table
+                dateColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("date"));
+                requestNumberColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("requestNumber"));
+                serviceTagColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("serviceTag"));
+                modelColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("model"));
+                machineIssueColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("machineIssue"));
+                partNeededColumn.setCellValueFactory(
+                        new PropertyValueFactory<>("partNeeded"));
+
+                //Set table data
+                logUITableView.setItems(logData);
+                database.closeConnection();
+            }
         }
     }
 

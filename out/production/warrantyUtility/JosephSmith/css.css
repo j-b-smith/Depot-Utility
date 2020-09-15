@@ -19,6 +19,10 @@
     -fx-background-image: url("backgroundtexture3.jpg");
 }
 
+.dialogPane {
+    -fx-background-image: url("backgroundtexture3.jpg");
+}
+
 .formLabel{
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;

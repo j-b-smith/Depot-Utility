@@ -17,14 +17,15 @@ public class Main extends Application {
         primaryStage.setTitle("Depot Utility");
 
         //Create main window scene
-        Scene mainUI = new Scene(root, 1300, 750);
+        Scene mainUI = new Scene(root, 1300, 725);
 
         URL stylesheetUrl = getClass().getResource("css.css");
         mainUI.getStylesheets().add(stylesheetUrl.toExternalForm());
 
         //Set main window scene
         primaryStage.setScene(mainUI);
-        primaryStage.setResizable(false);
+        //
+        // primaryStage.setResizable(false);
         primaryStage.show();
 
     }

@@ -8,14 +8,6 @@ public class WarrantyMachine {
     String partNeeded;
     String serialNumber;
 
-    public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded){
-        this.serviceTag = serviceTag.toUpperCase();
-        this.machineIssue = machineIssue;
-        this.troubleshootingSteps = troubleshootingSteps;
-        this.partNeeded = partNeeded;
-
-    }
-
     public WarrantyMachine(String serviceTag, String machineIssue, String troubleshootingSteps, String partNeeded, String serialNumber){
         this.serviceTag = serviceTag.toUpperCase();
         this.machineIssue = machineIssue;
