@@ -10,7 +10,19 @@ import java.util.Date;
 public class DatabaseHelper {
     Connection connection = null;
 
+    //Connect to local database
+    String localSQLServer = "jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility";
+    String localUser = "sa";
+    String localPass = "Kayla0626!$";
 
+    //Connect to SQL Work Server
+    String workServerSQLString = "jdbc:sqlserver://SIWPSQL5001\\SQLEXPRESS.database.windows.net:58226;"
+            + "database=Depot;"
+            + "user=da;"
+            + "password=Depot$07Depot$07;"
+            + "encrypt=true;"
+            + "trustServerCertificate=true;"
+            + "loginTimeout=30;";
 
     //Constructor
     public DatabaseHelper(){}
@@ -191,9 +203,9 @@ public class DatabaseHelper {
 
 
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed) " +
+            statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Serial_Number) " +
                     "VALUES ('" + machine.serviceTag + "' , '" + machine.machineIssue + "' , '"
-                    + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' );");
+                    + machine.troubleshootingSteps + "' , '" + machine.partNeeded + "' , '" + machine.serialNumber + "' );");
 
         } catch (SQLException e) {
             e.printStackTrace();

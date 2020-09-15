@@ -167,10 +167,10 @@ public class MainUIGridPaneController implements Initializable {
 
             if (isValid) {
                 writeWarrantyMachineTable();
+                populateMachineListView();
                 machineIssueComboBox.getSelectionModel().clearSelection();
                 serviceTagTextField.clear();
                 serialNumberTextField.clear();
-                populateMachineListView();
             }
     }
 
@@ -309,10 +309,11 @@ public class MainUIGridPaneController implements Initializable {
         String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
         String partNeeded = database.getCellValue("Part_Needed", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
         String serviceTag = serviceTagTextField.getText();
+        String serialNumber = serialNumberTextField.getText(); //Not getting text value
 
         //Write machine object to database
         database.addNewRowToWarrantyMachines(new WarrantyMachine(serviceTag, machineIssue,
-                troubleshootingSteps, partNeeded, serialNumberTextField.getText()));
+                troubleshootingSteps, partNeeded, serialNumber));
 
         }
 
