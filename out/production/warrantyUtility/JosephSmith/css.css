@@ -28,6 +28,12 @@
     -fx-font-weight: bold;
 }
 
+.tableLabel{
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
 .jfx-hamburger StackPane {
     -fx-background-color: #ffffff;
 }

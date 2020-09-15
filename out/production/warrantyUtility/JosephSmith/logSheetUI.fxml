@@ -25,7 +25,7 @@
 
         <TableView fx:id="logUITableView" VBox.vgrow="ALWAYS">
             <placeholder>
-                <Label text="There are no results for this search"/>
+                <Label styleClass="tableLabel"  text="There are no results for this search"/>
             </placeholder>
 
             <columns>

@@ -12,7 +12,8 @@
 
     <columnConstraints>
         <ColumnConstraints percentWidth="20"/>
-        <ColumnConstraints percentWidth="80"/>
+        <ColumnConstraints percentWidth="65"/>
+        <ColumnConstraints percentWidth="15"/>
     </columnConstraints>
 
     <rowConstraints>
@@ -35,11 +36,11 @@
         <JFXButton styleClass="jfxButton" id="jfxButton" buttonType="RAISED" text="Add Task" onAction="#addToQueue"/>
     </VBox>
 
-    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10" >
+    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.columnSpan="2" spacing="10" >
         <Label text="Task Queue" styleClass="formLabel"/>
         <TableView fx:id="scTaskTable" VBox.vgrow="ALWAYS">
             <placeholder>
-                <Label text="No Tasks In Queue"/>
+                <Label styleClass="tableLabel" text="There are no tasks in the queue"/>
             </placeholder>
             <columns>
                 <TableColumn fx:id="sctaskNumColumn" text="SCTASK"/>
@@ -55,7 +56,7 @@
             <Label styleClass="alertLabel" fx:id="alertLabel" textFill="red" visible="false"/>
         </HBox>
     </VBox>
-    <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
+    <HBox GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.halignment="RIGHT">
         <JFXButton styleClass="jfxButton" buttonType="RAISED" text="Complete Tasks" onAction="#openLoginDialog"/>
     </HBox>
 

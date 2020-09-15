@@ -104,7 +104,7 @@
                     spacing="20">
                     <TableView fx:id="warrantyMachineTableView" VBox.vgrow="ALWAYS">
                         <placeholder>
-                            <Label styleClass="formLabel" text="There are no results for this search"/>
+                            <Label styleClass="tableLabel" text="There are no machines in the queue"/>
                         </placeholder>
 
                         <columns>
