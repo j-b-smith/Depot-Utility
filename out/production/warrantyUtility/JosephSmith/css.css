@@ -32,6 +32,10 @@
     -fx-background-color: #ffffff;
 }
 
+.jfxComboBox{
+    -fx-background-color: #ffffff;
+}
+
 .jfxButton{
     -fx-background-color: #D3D3D3;
 }
@@ -59,6 +63,7 @@
 .table-view{
     -fx-opacity: 0.8;
     -fx-accent: #1c70a9;
+    -fx-background-color: #3abcf0;
 }
 
 .table-view:focused{

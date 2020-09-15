@@ -16,6 +16,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <BorderPane fx:controller="JosephSmith.MainUIGridPaneController"
             maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity"
@@ -74,9 +75,7 @@
                     <TextField fx:id="serviceTagTextField" onAction="#onServiceTagInputEnter"/>
 
                     <Label text="Select Machine Issue" styleClass="formLabel"/>
-                    <ComboBox fx:id="machineIssueComboBox" onKeyPressed="#onComboKeyEnter" onAction="#onComboBoxChange"/>
-
-
+                    <JFXComboBox styleClass="jfxComboBox" fx:id="machineIssueComboBox" onKeyPressed="#onComboKeyEnter" onAction="#onComboBoxChange"/>
                     <Label fx:id="serialNumberLabel" text="Serial Number" visible="false" styleClass="formLabel"/>
                     <TextField fx:id="serialNumberTextField" visible="false" disable="true"/>
                 </VBox>
@@ -105,7 +104,7 @@
                     spacing="20">
                     <TableView fx:id="warrantyMachineTableView" VBox.vgrow="ALWAYS">
                         <placeholder>
-                            <Label text="There are no results for this search"/>
+                            <Label styleClass="formLabel" text="There are no results for this search"/>
                         </placeholder>
 
                         <columns>

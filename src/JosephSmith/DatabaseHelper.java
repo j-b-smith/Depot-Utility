@@ -10,6 +10,8 @@ import java.util.Date;
 public class DatabaseHelper {
     Connection connection = null;
 
+
+
     //Constructor
     public DatabaseHelper(){}
 

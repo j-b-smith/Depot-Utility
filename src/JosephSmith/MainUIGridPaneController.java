@@ -67,6 +67,8 @@ public class MainUIGridPaneController implements Initializable {
 
     //Set the transition and content for the menu drawer
     public void setMenuDrawer(){
+
+        //Set to null to allow grid pane to fill screen when drawer closes
         mainUIBorderPane.setLeft(null);
         HamburgerBackArrowBasicTransition burgerTransition = new HamburgerBackArrowBasicTransition(hamburger);
         burgerTransition.setRate(-1);
@@ -74,10 +76,12 @@ public class MainUIGridPaneController implements Initializable {
             burgerTransition.setRate(burgerTransition.getRate() * -1);
             burgerTransition.play();
 
-
+            //Set left border pane to null once drawer closes
             if (menuDrawer.isOpened()){
                 menuDrawer.close();
-                mainUIBorderPane.setLeft(null);
+                menuDrawer.onDrawerClosedProperty().set(event1 -> {
+                    mainUIBorderPane.setLeft(null);
+                });
             } else {
                 menuDrawer.open();
                 mainUIBorderPane.setLeft(menuDrawer);
