@@ -26,17 +26,13 @@ public class NewIssueDialogController implements Initializable {
     }
 
     public void addNewMachineIssue(){
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
         //Get input validator
         InputValidator validator = new InputValidator(this);
 
         if (validator.addNewIssueValidation()) {
-            database.addNewRowToIssueDescriptions(newMachineIssue.getText(),
+            DatabaseHelper.addNewRowToIssueDescriptions(newMachineIssue.getText(),
                     newTroubleshootingSteps.getText(), newPartNeededComboBox.getValue());
-
-            database.closeConnection();
 
             //Clear fields and hide New Part fields
             newMachineIssue.clear();
@@ -51,19 +47,13 @@ public class NewIssueDialogController implements Initializable {
     Get unique part values from the DescriptionSheet table and populate the combo box with parts
      */
     public void populatePartNeededComboBox(){
-        //Connect to database
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
         //Create lists from description sheet
-        partsList = database.createUniqueValueList("Part_Needed", "IssueDescriptions");
+        partsList = DatabaseHelper.createUniqueValueList("Part_Needed", "IssueDescriptions");
 
 
         //Populate Machine Issue Combo Box
         ObservableList<String> partsComboList = FXCollections.observableList(partsList);
         newPartNeededComboBox.setItems(partsComboList);
-
-        //Close database connection
-        database.closeConnection();
     }
 }

@@ -35,12 +35,8 @@ public class logUIController implements Initializable {
 
     public void populateLogTable(){
 
-            //Connect to database
-            DatabaseHelper database = new DatabaseHelper();
-            database.connect();
-
             //Pass arrayList into observable list
-            ObservableList<LogEntry> logData = FXCollections.observableList(database.getLogMachines());
+            ObservableList<LogEntry> logData = FXCollections.observableList(DatabaseHelper.getLogMachines());
 
             //Create cell factories for table
             dateColumn.setCellValueFactory(
@@ -59,7 +55,6 @@ public class logUIController implements Initializable {
             //Set table data
             logUITableView.setItems(logData);
 
-            database.closeConnection();
     }
 
     public void displayLogSearchResult(KeyEvent event) {
@@ -71,19 +66,16 @@ public class logUIController implements Initializable {
 
             //Verify search criteria is present
             if (searchCriteria != null) {
-                //Connect to database
-                DatabaseHelper database = new DatabaseHelper();
-                database.connect();
 
                 //Create temporary arrayList for LogEntries
                 ArrayList<LogEntry> logSearchResults = new ArrayList<>();
 
-                ObservableList<LogEntry> logMachines = database.getLogMachines();
+                ObservableList<LogEntry> logMachines = DatabaseHelper.getLogMachines();
 
                 //Populate arrayList from database
                 for (LogEntry entry : logMachines) {
                     //Get string value and add to log data if it contains search criteria
-                    String logEntry = database.logEntryToString(entry);
+                    String logEntry = DatabaseHelper.logEntryToString(entry);
                     if (logEntry.toLowerCase().contains(searchCriteria.toLowerCase())) {
                         logSearchResults.add(entry);
                     }
@@ -107,7 +99,6 @@ public class logUIController implements Initializable {
 
                 //Set table data
                 logUITableView.setItems(logData);
-                database.closeConnection();
             }
         }
     }

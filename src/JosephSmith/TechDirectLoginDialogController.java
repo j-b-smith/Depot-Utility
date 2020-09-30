@@ -1,13 +1,11 @@
 package JosephSmith;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -50,7 +48,11 @@ public class TechDirectLoginDialogController implements Initializable {
             warrantyThread = new Thread(() -> {
                 String techDirectEmail = techDirectWwidField.getText() + "@cummins.com";
                 String techDirectPass = techDirectPassField.getText();
-                mainController.performWarranty(techDirectEmail, techDirectPass);
+                try {
+                    mainController.performWarranty(techDirectEmail, techDirectPass);
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
             warrantyThread.start();
 
@@ -58,7 +60,6 @@ public class TechDirectLoginDialogController implements Initializable {
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.close();
 
-            warrantyThread.join();
         }
     }
 

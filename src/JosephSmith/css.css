@@ -1,9 +1,11 @@
+
 .menuButton:hover{
-	-fx-background-color: #62b3df;
-	-fx-text-fill: #ffffff;
-	-fx-font-size: 18px;
-	-fx-font-weight: bold;
-}
+ 	-fx-background-color: #62b3df;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-font-size: 18px;
+ 	-fx-font-weight: bold;
+ }
+
 
 .menuButton{
 	-fx-background-color: linear-gradient(to right, #21529e, #3e84c9);

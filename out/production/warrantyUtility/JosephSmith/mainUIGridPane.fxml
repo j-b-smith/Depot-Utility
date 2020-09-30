@@ -18,6 +18,10 @@
 <?import javafx.scene.image.Image?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import com.jfoenix.controls.JFXToggleNode?>
 <BorderPane fx:controller="JosephSmith.MainUIGridPaneController"
             maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity"
@@ -34,13 +38,13 @@
                 <ImageView fitHeight="164.0" fitWidth="268.0">
                     <Image url="@cpu.jpg"/>
                 </ImageView>
-                <JFXButton styleClass="menuButton" prefHeight="62.0" prefWidth="272.0" text="Warranty Form" onAction="#switchToWarrantyForm" alignment="BASELINE_LEFT"/>
-                <JFXButton fx:id="warrantyHistory" styleClass="menuButton" prefHeight="73.0" prefWidth="267.0"
+                <JFXButton fx:id="warrantyMenuButton" styleClass="menuButton" prefHeight="62.0" prefWidth="272.0" text="Warranty Form" onAction="#switchToWarrantyForm" alignment="BASELINE_LEFT" />
+                <JFXButton fx:id="logMenuButton" styleClass="menuButton" prefHeight="73.0" prefWidth="267.0"
                            text="Warranty History" onAction="#switchToMachineLog" alignment="BASELINE_CENTER"/>
-                <JFXButton styleClass="menuButton" prefHeight="69.0" prefWidth="267.0" text="Visual History"
+                <JFXButton fx:id="visualMenuButton" styleClass="menuButton" prefHeight="69.0" prefWidth="267.0" text="Visual History"
                            onAction="#switchToVisualLog" alignment="BASELINE_CENTER"/>
-                <JFXButton styleClass="menuButton" prefHeight="69.0" prefWidth="267.0" text="Add New Issue" alignment="BASELINE_CENTER" onAction="#switchToAddNewIssueForm"/>
-                <JFXButton fx:id="serviceNowButton" styleClass="menuButton" prefHeight="64.0" prefWidth="267.0"
+                <JFXButton fx:id="newIssueMenuButton" styleClass="menuButton" prefHeight="69.0" prefWidth="267.0" text="Add New Issue" alignment="BASELINE_CENTER" onAction="#switchToAddNewIssueForm"/>
+                <JFXButton fx:id="serviceNowMenuButton" styleClass="menuButton" prefHeight="64.0" prefWidth="267.0"
                            text="Service Now" onAction="#switchToServiceNow" alignment="BASELINE_LEFT"/>
             </VBox>
             </sidePane>

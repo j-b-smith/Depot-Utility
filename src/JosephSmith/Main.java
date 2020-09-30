@@ -13,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        Parent root = FXMLLoader.load(getClass().getResource("MainUIGridPane.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("mainUIGridPane.fxml"));
         primaryStage.setTitle("Depot Utility");
 
         //Create main window scene
@@ -27,6 +27,7 @@ public class Main extends Application {
         //
         // primaryStage.setResizable(false);
         primaryStage.show();
+
 
     }
 

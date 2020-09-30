@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
@@ -60,17 +59,13 @@ public class LogPieChartController implements Initializable {
     //Sort by part
     public void createPartNeededPieChart(){
 
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
-
         //Get unique parts list from LogSheet table
-        ArrayList<String> uniqueParts = database.createUniqueValueList("Part_Needed", "MachineLog");
+        ArrayList<String> uniqueParts = DatabaseHelper.createUniqueValueList("Part_Needed", "MachineLog");
 
         //Populate list with count of each part
         ArrayList<Integer> uniquePartCount = new ArrayList<>();
         for (String uniquePart : uniqueParts) {
-            uniquePartCount.add(database.getValueCount("MachineLog", "Part_Needed", uniquePart));
+            uniquePartCount.add(DatabaseHelper.getValueCount("MachineLog", "Part_Needed", uniquePart));
         }
 
         //Populate list of PieChart.Data objects
@@ -84,24 +79,18 @@ public class LogPieChartController implements Initializable {
 
         //Set data
         logPieChart.setData(pieChartData);
-        database.closeConnection();
-
     }
 
     //Sort by model
     public void createModelPieChart(){
 
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
-
         //Get unique models from Logsheet table
-        ArrayList<String> uniqueModels = database.createUniqueValueList("Model", "MachineLog");
+        ArrayList<String> uniqueModels = DatabaseHelper.createUniqueValueList("Model", "MachineLog");
 
         //Populate list with count of each part
         ArrayList<Integer> uniqueModelCount = new ArrayList<>();
         for (String uniqueModel : uniqueModels){
-            uniqueModelCount.add(database.getValueCount("MachineLog", "Model", uniqueModel));
+            uniqueModelCount.add(DatabaseHelper.getValueCount("MachineLog", "Model", uniqueModel));
         }
 
         //Populate list of PieChart.Data objects
@@ -115,6 +104,6 @@ public class LogPieChartController implements Initializable {
 
         //Set data
         logPieChart.setData(pieChartData);
-        database.closeConnection();
+
     }
 }

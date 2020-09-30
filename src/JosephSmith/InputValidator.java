@@ -119,6 +119,7 @@ public class InputValidator {
             mainController.serialNumberTextField.setStyle(null);
             mainController.machineIssueComboBox.setStyle(null);
             mainController.alertLabel.setVisible(false);
+
             mainController.serviceTagTextField.requestFocus();
             mainController.serialNumberTextField.setVisible(false);
             mainController.serialNumberLabel.setVisible(false);

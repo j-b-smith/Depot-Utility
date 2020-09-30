@@ -12,24 +12,31 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import javafx.stage.Window;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class MainUIGridPaneController implements Initializable {
     public Button submitMachineButton;
@@ -51,9 +58,12 @@ public class MainUIGridPaneController implements Initializable {
     public JFXDrawer menuDrawer;
     public BorderPane mainUIBorderPane;
     public JFXHamburger hamburger;
-    public JFXButton serviceNowButton;
-    public JFXButton warrantyHistory;
     public GridPane warrantyFormGridPane;
+    public JFXButton warrantyMenuButton;
+    public JFXButton logMenuButton;
+    public JFXButton visualMenuButton;
+    public JFXButton newIssueMenuButton;
+    public JFXButton serviceNowMenuButton;
 
 
     @Override
@@ -118,11 +128,6 @@ public class MainUIGridPaneController implements Initializable {
         mainUIBorderPane.setCenter(root);
     }
 
-
-    /*
-    Run the warranty process on a separate thread to avoid UI stall
-    Clear the list view
-     */
     public void initiateWarrantyButton() throws IOException, InterruptedException {
         openLoginDialog();
     }
@@ -145,10 +150,6 @@ public class MainUIGridPaneController implements Initializable {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
 
-        //Get controller
-        TechDirectLoginDialogController loginController = loader.getController();
-        loginController.warrantyThread.join();
-        populateMachineListView();
     }
 
     /*
@@ -211,13 +212,11 @@ public class MainUIGridPaneController implements Initializable {
      */
     public void populateMachineListView() {
 
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
+
 
 
         //Convert object list to Observable list
-        ObservableList<WarrantyMachine> warrantyMachineListViewData = database.getWarrantyMachines();
+        ObservableList<WarrantyMachine> warrantyMachineListViewData = DatabaseHelper.getWarrantyMachines();
 
         if (warrantyMachineListViewData.size() > 0) {
             //Set machine quantity label
@@ -241,7 +240,6 @@ public class MainUIGridPaneController implements Initializable {
         //Set List View data and populate
         warrantyMachineTableView.setItems(warrantyMachineListViewData);
 
-        database.closeConnection();
     }
 
     /*
@@ -250,17 +248,14 @@ public class MainUIGridPaneController implements Initializable {
      */
     public void removeFromListView() {
 
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
         //Remove selected items from WarrantyMachines Table and List View
         ObservableList<WarrantyMachine> selectedWarrantyMachines = warrantyMachineTableView.getSelectionModel().getSelectedItems();
 
         //Remove from warranty machine table
-        database.removeRowsFromWarrantyMachines(selectedWarrantyMachines);
+        DatabaseHelper.removeRowsFromWarrantyMachines(selectedWarrantyMachines);
 
-        ObservableList<WarrantyMachine> currentMachinesData = database.getWarrantyMachines();
+        ObservableList<WarrantyMachine> currentMachinesData = DatabaseHelper.getWarrantyMachines();
 
         //Update list view
         warrantyMachineTableView.setItems(currentMachinesData);
@@ -269,7 +264,6 @@ public class MainUIGridPaneController implements Initializable {
         if (currentMachinesData.size() > 0) {
             listViewCountLabel.setText("Qty: " + currentMachinesData.size());
         } else listViewCountLabel.setText("");
-        database.closeConnection();
     }
 
     /*
@@ -277,19 +271,15 @@ public class MainUIGridPaneController implements Initializable {
     Populate machine issue combo box
      */
     public void populateMachineIssueComboBox() {
-        //Get database connection
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
+
 
         //Create lists from description sheet
-        ArrayList<String> machineIssueList = database.createListFromColumn("Machine_Issue", "IssueDescriptions");
+        ArrayList<String> machineIssueList = DatabaseHelper.createListFromColumn("Machine_Issue", "IssueDescriptions");
 
         //Populate Machine Issue Combo Box
         ObservableList<String> machineIssueComboList = FXCollections.observableList(machineIssueList);
         machineIssueComboBox.setItems(machineIssueComboList);
 
-        //Close database connection
-        database.closeConnection();
     }
 
     /*
@@ -300,19 +290,16 @@ public class MainUIGridPaneController implements Initializable {
         //Machine issue selection
         String machineIssueSelection = machineIssueComboBox.getValue();
 
-        //Create database helper and connect
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
         //Get values from description sheet based on machine issue selection value
-        String machineIssue = database.getCellValue("Machine_Issue", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
-        String troubleshootingSteps = database.getCellValue("Troubleshooting_Steps", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
-        String partNeeded = database.getCellValue("Part_Needed", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
+        String machineIssue = DatabaseHelper.getCellValue("Machine_Issue", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
+        String troubleshootingSteps = DatabaseHelper.getCellValue("Troubleshooting_Steps", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
+        String partNeeded = DatabaseHelper.getCellValue("Part_Needed", "IssueDescriptions", "Machine_Issue", machineIssueSelection);
         String serviceTag = serviceTagTextField.getText();
         String serialNumber = serialNumberTextField.getText(); //Not getting text value
 
         //Write machine object to database
-        database.addNewRowToWarrantyMachines(new WarrantyMachine(serviceTag, machineIssue,
+        DatabaseHelper.addNewRowToWarrantyMachines(new WarrantyMachine(serviceTag, machineIssue,
                 troubleshootingSteps, partNeeded, serialNumber));
 
         }
@@ -320,7 +307,7 @@ public class MainUIGridPaneController implements Initializable {
     /*
     Using selenium, perform the warranty process and log the information to the database
      */
-    public void performWarranty(String techDirectEmail, String techDirectPass) {
+    public void performWarranty(String techDirectEmail, String techDirectPass) throws IOException, InterruptedException {
 
         //Create WebDriver object
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\jsmit\\chromedriver.exe");
@@ -345,18 +332,14 @@ public class MainUIGridPaneController implements Initializable {
                 ExpectedConditions.elementToBeClickable(By.id("_ctl0_BodyContent_common_boxes_rptBoxes__ctl1_btnBox")));
         createDispatch.click();
 
-        //Create database object and connect
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
-
         //Create list of distinct service tags
-        ArrayList<String> distinctServiceTags = database.createUniqueValueList("Service_Tag", "WarrantyMachines");
+        ArrayList<String> distinctServiceTags = DatabaseHelper.createUniqueValueList("Service_Tag", "WarrantyMachines");
 
         //Perform warranty process for each warranty machine
         for (String serviceTag : distinctServiceTags) {
 
             //Get list of warranty machines with the same service tag
-            ArrayList<WarrantyMachine> multiplePartMachineList = database.getDuplicateMachines(serviceTag);
+            ArrayList<WarrantyMachine> multiplePartMachineList = DatabaseHelper.getDuplicateMachines(serviceTag);
 
             //Enter Service Tag
             WebElement enterServiceTag = new WebDriverWait(driver, 30).until(
@@ -374,7 +357,7 @@ public class MainUIGridPaneController implements Initializable {
                 String alertMessage = driver.findElement(By.xpath("//*[@id=\"_ctl0_BodyContent_CreateDispL_caError_lblAlertText\"]")).getText();
 
                 //Write the alert to the alert sheet table
-                database.addNewRowToAlertLog(serviceTag, alertMessage);
+                DatabaseHelper.addNewRowToAlertLog(serviceTag, alertMessage);
 
                 //Skip the iteration of this machine
                 continue;
@@ -459,7 +442,7 @@ public class MainUIGridPaneController implements Initializable {
             nextPageButton2.click();
 
             //Select part needed
-            selectMachinePart(driver, database, machineModel, multiplePartMachineList);
+            selectMachinePart(driver, machineModel, multiplePartMachineList);
 
             //Switch from iFrame to default content
             driver.switchTo().defaultContent();
@@ -488,20 +471,15 @@ public class MainUIGridPaneController implements Initializable {
             ObservableList<WarrantyMachine> machinesToBeRemoved = FXCollections.observableArrayList(multiplePartMachineList);
 
             //Remove current warranty machines from table
-            database.removeRowsFromWarrantyMachines(machinesToBeRemoved);
+            DatabaseHelper.removeRowsFromWarrantyMachines(machinesToBeRemoved);
+
 
         }
-
-        //Close database connection
-        database.closeConnection();
-
         //Close ChromeDriver
         driver.close();
     }
 
     public void writeToLogSheet(ArrayList<WarrantyMachine> multiplePartMachineList, String machineModel, String requestNumberRaw) {
-        DatabaseHelper database = new DatabaseHelper();
-        database.connect();
 
         //Get raw Service Request string
         String[] tempRequestNumberArray = requestNumberRaw.split(" ");
@@ -518,11 +496,8 @@ public class MainUIGridPaneController implements Initializable {
 
         for (WarrantyMachine warrantyMachine : multiplePartMachineList) {
             //Write Warranty Information to Log Sheet
-            database.addNewRowToMachineLog(requestNumber, warrantyMachine.serviceTag.toUpperCase(), machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
+            DatabaseHelper.addNewRowToMachineLog(requestNumber, warrantyMachine.serviceTag.toUpperCase(), machineModel, warrantyMachine.machineIssue, warrantyMachine.partNeeded);
         }
-
-        //Close database connection
-        database.closeConnection();
     }
 
     /*
@@ -540,7 +515,7 @@ public class MainUIGridPaneController implements Initializable {
     }
 
     //Select the parts or parts needed for repair
-    private void selectMachinePart(WebDriver driver, DatabaseHelper database, String machineModel, ArrayList<WarrantyMachine> multiplePartMachineList){
+    private void selectMachinePart(WebDriver driver, String machineModel, ArrayList<WarrantyMachine> multiplePartMachineList){
 
         //Switch to parts iFrame
         WebElement partsIFrame = new WebDriverWait(driver, 30).until(
@@ -549,55 +524,43 @@ public class MainUIGridPaneController implements Initializable {
 
         //Wait for all parts to load
         new WebDriverWait(driver, 60).until(
-                ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("clr-checkbox-container")));
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("Button")));
 
         for (WarrantyMachine machine : multiplePartMachineList) {
 
             //Get part search criteria from database
-            String partDescription = database.getPartDescription(machineModel, machine.partNeeded);
+            String partDescription = DatabaseHelper.getPartDescription(machineModel, machine.partNeeded);
 
             //Enter part needed in search box
             WebElement partSearchField = new WebDriverWait(driver, 30).until(
-                    ExpectedConditions.presenceOfElementLocated(By.name("search")));
+                    ExpectedConditions.elementToBeClickable(By.name("search")));
             partSearchField.clear();
             partSearchField.sendKeys(partDescription);
             partSearchField.sendKeys(Keys.RETURN);
 
-
-            //Check for checkbox element
-            try {
-                WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
-                checkbox.sendKeys(Keys.SPACE);
-            } catch (NoSuchElementException e) {
-                e.printStackTrace();
-            }
-
             //Check for radio button element
             try {
-                WebElement radioButton = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='radio']"));
-                radioButton.sendKeys(Keys.SPACE);
+                try {
+                    //Check for span element containing part description
+                    WebElement radioButton = driver.findElement(By.xpath("//span[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='radio']"));
+                    radioButton.sendKeys(Keys.SPACE);
+                } catch (NoSuchElementException e){
+                    e.printStackTrace();
+
+                    //Check for strong element containing part description
+                    WebElement radioButton = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='radio']"));
+                    radioButton.sendKeys(Keys.SPACE);
+                }
+
 
                 //Check for serial number
-                if (machine.serialNumber != null) {
-                    WebElement serialNumberField = driver.findElement(By.xpath("//strong[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='text']"));
+                if (!machine.serialNumber.equals("")) {
+                    WebElement serialNumberField = new WebDriverWait(driver, 30).until(
+                            ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(),'" + partDescription + "')]/ancestor::clr-dg-row/descendant::input[@type='text']")));
                     serialNumberField.sendKeys(machine.serialNumber);
                 }
             } catch (NoSuchElementException e) {
                 e.printStackTrace();
-
-                //For 5530 model, if "80 Keys" search doesn't match, try "Palmrest" search
-                if (machineModel.equals("Precision 5530") && machine.partNeeded.equals("Palm Rest (incl Touch Pad)")) {
-                    try {
-                        partSearchField.clear();
-                        partSearchField.sendKeys("Palmrest");
-                        partSearchField.sendKeys(Keys.RETURN);
-                        WebElement checkbox = driver.findElement(By.xpath("//strong[contains(text(),'Palmrest')]/ancestor::clr-checkbox-container/descendant::input[@type='checkbox']"));
-                        checkbox.sendKeys(Keys.SPACE);
-                    } catch (NoSuchElementException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-
             }
         }
 

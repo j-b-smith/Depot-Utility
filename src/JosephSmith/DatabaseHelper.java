@@ -1,36 +1,26 @@
 package JosephSmith;
 
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class DatabaseHelper {
-    Connection connection = null;
+    private static Connection connection = null;
 
-    //Connect to local database
-    String localSQLServer = "jdbc:sqlserver://LAPTOP-QG6FOOF4\\SQLEXPRESS; databaseName=WarrantyUtility";
-    String localUser = "sa";
-    String localPass = "Kayla0626!$";
-
-    //Connect to SQL Work Server
-    String workServerSQLString = "jdbc:sqlserver://SIWPSQL5001\\SQLEXPRESS.database.windows.net:58226;"
-            + "database=Depot;"
-            + "user=da;"
-            + "password=Depot$07Depot$07;"
-            + "encrypt=true;"
-            + "trustServerCertificate=true;"
-            + "loginTimeout=30;";
-
-    //Constructor
-    public DatabaseHelper(){}
+    //Connection credentials removed for security purposes
 
     //Connect to SQLExpress database
-    public void connect(){
+    private static void connect(){
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+
+
             connection = DriverManager.getConnection(localSQLServer, localUser, localPass);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -38,7 +28,7 @@ public class DatabaseHelper {
     }
 
     //Close database connection
-    public void closeConnection(){
+    private static void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {
@@ -48,16 +38,21 @@ public class DatabaseHelper {
 
 
     //Convert the log entry to a string for filtering
-    public String logEntryToString(LogEntry entry){
-        return entry.date + " " + entry.requestNumber + " " + entry.serviceTag + " " + entry.model + " " + entry.machineIssue + " " + entry.partNeeded;
+    public static String logEntryToString(LogEntry entry){
+        connect();
+        String logEntry =  entry.date + " " + entry.requestNumber + " " + entry.serviceTag + " " + entry.model + " " + entry.machineIssue + " " + entry.partNeeded;
+        closeConnection();
+        return logEntry;
     }
 
     /*
     Get cell value by value
      */
-    public String getCellValue(String returnColumn, String tableName, String sortColumn, String sortValue) {
+    public static String getCellValue(String returnColumn, String tableName, String sortColumn, String sortValue) {
         //Increment index for database use
         String value = null;
+
+        connect();
 
         try(Statement statement = connection.createStatement()) {
             //Get result set
@@ -72,13 +67,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
         return value;
     }
 
     /*
     Get machines with multiple issues
     */
-    public ArrayList<WarrantyMachine> getDuplicateMachines(String serviceTag) {
+    public static ArrayList<WarrantyMachine> getDuplicateMachines(String serviceTag) {
+        connect();
 
         ArrayList<WarrantyMachine> duplicateMachines = new ArrayList<>();
 
@@ -106,14 +103,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
         return duplicateMachines;
     }
 
     /*
     Get machines with multiple issues
     */
-    public ObservableList<WarrantyMachine> getWarrantyMachines() {
-
+    public static ObservableList<WarrantyMachine> getWarrantyMachines() {
+        connect();
         ArrayList<WarrantyMachine> warrantyMachines = new ArrayList<>();
 
         try(Statement statement = connection.createStatement()) {
@@ -137,15 +135,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        closeConnection();
         return FXCollections.observableArrayList(warrantyMachines);
     }
 
     /*
     Get log machines
     */
-    public ObservableList<LogEntry> getLogMachines() {
-
+    public static ObservableList<LogEntry> getLogMachines() {
+        connect();
         ArrayList<LogEntry> logMachines = new ArrayList<>();
 
         try(Statement statement = connection.createStatement()) {
@@ -171,14 +169,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        closeConnection();
         return FXCollections.observableArrayList(logMachines);
     }
 
     /*
     Get number of rows that contain a specific value
      */
-    public int getValueCount(String tableName, String column, String value){
+    public static int getValueCount(String tableName, String column, String value){
+        connect();
         int count = 0;
         try (Statement statement = connection.createStatement()){
             //Get Result set
@@ -193,14 +192,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
         return count;
     }
 
     /*
     Add new row to table
      */
-    public void addNewRowToWarrantyMachines(WarrantyMachine machine) {
-
+    public static void addNewRowToWarrantyMachines(WarrantyMachine machine) {
+        connect();
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("INSERT INTO WarrantyMachines (Service_Tag, Machine_Issue, Troubleshooting_Steps, Part_Needed, Serial_Number) " +
@@ -210,10 +210,11 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
     }
 
-    public void addNewRowToAlertLog(String serviceTag, String alertMessage ){
-
+    public static void addNewRowToAlertLog(String serviceTag, String alertMessage ){
+        connect();
         //Create date format and get current date
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
         Date currentDate = new Date();
@@ -225,10 +226,11 @@ public class DatabaseHelper {
         } catch (SQLException e){
             e.printStackTrace();
         }
+        closeConnection();
     }
 
-    public void addNewRowToMachineLog(String requestNumber, String serviceTag , String model, String machineIssue, String partNeeded ){
-
+    public static void addNewRowToMachineLog(String requestNumber, String serviceTag , String model, String machineIssue, String partNeeded ){
+        connect();
         //Create date format and get current date
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/YYYY");
         Date currentDate = new Date();
@@ -241,9 +243,11 @@ public class DatabaseHelper {
         } catch (SQLException e){
             e.printStackTrace();
         }
+        closeConnection();
     }
 
-    public void addNewRowToIssueDescriptions( String machineIssue, String troubleshootingSteps, String partNeeded ){
+    public static void addNewRowToIssueDescriptions( String machineIssue, String troubleshootingSteps, String partNeeded ){
+        connect();
         if (machineIssue != null && troubleshootingSteps != null && partNeeded != null) {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("INSERT INTO IssueDescriptions (Machine_Issue, Troubleshooting_Steps, Part_Needed) VALUES " +
@@ -252,13 +256,14 @@ public class DatabaseHelper {
                 e.printStackTrace();
             }
         }
+        closeConnection();
     }
 
     /*
     remove rows from warranty machine table by list of machines
      */
-    public void removeRowsFromWarrantyMachines(ObservableList<WarrantyMachine> list){
-
+    public static void removeRowsFromWarrantyMachines(ObservableList<WarrantyMachine> list){
+        connect();
         //reIndexTable("WarrantyMachines");
 
         for (WarrantyMachine machine : list) {
@@ -269,9 +274,11 @@ public class DatabaseHelper {
                 e.printStackTrace();
             }
         }
+        closeConnection();
     }
 
-    public String getPartDescription(String model, String part){
+    public static String getPartDescription(String model, String part){
+        connect();
 
         //Format model to match table columns
        model = model.replace(" ", "_");
@@ -290,14 +297,15 @@ public class DatabaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeConnection();
         return value;
     }
 
     /*
     Create lists from tables
      */
-    public ArrayList<String> createListFromColumn(String column, String tableName){
-
+    public static ArrayList<String> createListFromColumn(String column, String tableName){
+        connect();
         //Create array list to return values
         ArrayList<String> columnList = new ArrayList<>();
 
@@ -336,11 +344,12 @@ public class DatabaseHelper {
                 e.printStackTrace();
             }
         }
+        closeConnection();
         return columnList;
     }
 
-    public ArrayList<String> createUniqueValueList(String column, String tableName){
-
+    public static ArrayList<String> createUniqueValueList(String column, String tableName){
+        connect();
         //Create array list to return values
         ArrayList<String> valueList = new ArrayList<>();
 
@@ -379,6 +388,7 @@ public class DatabaseHelper {
                 e.printStackTrace();
             }
         }
+        closeConnection();
         return valueList;
     }
 }
