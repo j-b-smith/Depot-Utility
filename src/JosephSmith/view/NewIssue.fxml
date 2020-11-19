@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
+<BorderPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="JosephSmith.view.NewIssueController"
+          prefHeight="300.0" prefWidth="600.0">
+            <padding>
+                <Insets top="20" bottom="20" left="20" right="20"/>
+            </padding>
+            <top>
+                <HBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Add New Issue" styleClass="headerLabel"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </top>
+            <center>
+                <HBox spacing="30">
+                    <VBox spacing="30">
+                        <Label text="Enter Machine Issue: " styleClass="formLabel"/>
+                        <Label text="Enter Troubleshooting Steps: " wrapText="true" styleClass="formLabel"/>
+                        <Label text="Select Part Needed: " styleClass="formLabel"/>
+
+                    </VBox>
+                    <VBox spacing="30">
+                        <TextField fx:id="newMachineIssue"/>
+                        <TextArea fx:id="newTroubleshootingSteps" wrapText="true"/>
+                        <ComboBox fx:id="newPartNeededComboBox"/>
+                    </VBox>
+                    <VBox spacing="30">
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <Label fx:id="alertLabel" styleClass="alertLabel" textFill="red"/>
+                    </VBox>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <HBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <JFXButton buttonType="RAISED" styleClass="jfxButton" fx:id="addNewMachineIssueButton" text="Add Issue" onAction="#addNewMachineIssue"/>
+                    </HBox>
+                </HBox>
+            </center>
+</BorderPane>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="JosephSmith.view.AssetInformationController"
+            prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <HBox>
+            <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Asset Information" styleClass="headerLabel"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox>
+            <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+            <HBox spacing="20">
+                <padding><Insets top="20" bottom="20"/></padding>
+                <VBox spacing="10">
+                    <Label text="Service Tag" styleClass="formLabel"/>
+                    <TextField fx:id="serviceTagTextField"/>
+                </VBox>
+                <VBox spacing="10">
+                    <Label text="Information Requested" styleClass="formLabel"/>
+                    <ComboBox fx:id="requestComboBox"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <VBox spacing="10">
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <JFXButton text="Get Info" fx:id="getInfoButton" styleClass="jfxButton"/>
+                </VBox>
+            </HBox>
+            <HBox>
+                <TextArea VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" disable="true" fx:id="infoTextArea" wrapText="true"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,118 @@
+
+.menuButton:hover{
+ 	-fx-background-color: #62b3df;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-font-size: 13px;
+ 	-fx-font-weight: bold;
+ 	-fx-background-radius: 0px;
+ }
+
+
+.menuButton{
+	-fx-background-color: linear-gradient(to right, #1b4482, #2966c4);
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: bold;
+	-fx-background-radius: 0px;
+}
+
+
+
+#menuVbox{
+    -fx-background-color: linear-gradient(to right, #1b4482, #2966c4);
+}
+
+.mainUIBorderPane {
+    -fx-background-image: url("../Images/techBackground.jpg");
+}
+
+.dialogPane {
+    -fx-background-image: url("../Images/techBackground.jpg");
+}
+
+.formLabel{
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.headerLabel{
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 32px;
+}
+
+.tableLabel{
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.jfx-hamburger StackPane {
+    -fx-background-color: #ffffff;
+}
+
+.jfxComboBox{
+    -fx-background-color: #ffffff;
+}
+
+.jfxButton{
+    -fx-background-color: #D3D3D3;
+}
+
+.jfxButton:hover{
+    -fx-background-color: #ffffff;
+}
+
+.chart-pie-label {
+    -fx-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.chart-pie-title {
+    -fx-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.alertLabel{
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #bf0000;
+}
+
+.table-view{
+    -fx-opacity: 0.9;
+    -fx-accent: #1c70a9;
+    -fx-background-color: #195c8f;
+}
+
+.table-view:focused{
+    -fx-opacity: 0.9;
+    -fx-accent: #1c70a9;
+}
+
+
+.table-view .column-header{
+    -fx-background-color: #136ea8;
+    -fx-opacity: 0.9;
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .table-cell{
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-padding: 5px, 5px, 5px, 5px;
+}
+
+.table-row-cell{
+    -fx-background-color: #195c8f;
+}
+
+.table-row-cell:odd{
+    -fx-background-color: #136ea8;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #70e1ef;
+}

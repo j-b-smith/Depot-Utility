@@ -1,16 +1,19 @@
 # Depot Utility
 
-The Depot Utility is a program designed to automate and optimize the process of submitting warranty requests to Dell through Dell Tech Direct. 
+The Depot Utility is designed to automate and optimize the process of submitting dispatch requests to Dell through Dell Tech Direct. 
 
-The Depot Utility uses the Java 8 Software Development Kit, JavaFX, Selenium Webdriver, JFoenix, CSS, Chromdriver and SQL Server Express.
+The Depot Utility was developed using JDK 11.0.8 and JavaFX SDK 11.0.2. 
+JFoenix and CSS were used to implement the visual design of the application.
+The information is stored in a local SQL Server database. 
+The application communicates to the Dell Tech Direct API using SOAP/REST requests.
 
 Features of the Warranty Utility include:
-  - Allows the user to store multiple Warranty Machines to have warranty requests submitted for
-  - Allows the user to remove warranty machines in singles or multiples if a mistake is made
-  - Allows the user to view a log containing all machines that have been warrantied through use of the application
-  - Allows the user to view a pie graph of log information that sorts by the part that was received or the model of machine
+  - Allows the user to submit dispatch requests for a list of machines
+  - Allows the user to remove dispatch machines from the queue
+  - Allows the user to view a log containing all submitted dispatches through the application
+  - Allows the user to view visual representations of dispatch requests
 
-The Service Now tab is newly added and is designed to allow a user to automatically close a list of tickets through Service Now as well as entering tracking numbers and work notes. 
+An update to the application to allow the creation of Technical Support requests through another Dell managed API is in progress as well as dispatch status tracking.
 
 
 ## Warranty Machine Form:
@@ -46,15 +49,5 @@ The Service Now tab is newly added and is designed to allow a user to automatica
 ![History Visual Gif](https://user-images.githubusercontent.com/26418249/93029488-31ce2500-f5e9-11ea-9af8-b0fa6e668b01.gif)
 
 
-## Service Now Form:
 
-**Figure 1:**
-
-![Service Now Gif](https://user-images.githubusercontent.com/26418249/93029503-490d1280-f5e9-11ea-9c57-a3ef6621db55.gif)
-
-## Service Now Login:
-
-**Figure 1:**
-
-![Service Now Login Gif](https://user-images.githubusercontent.com/26418249/93030339-3c3fed00-f5f0-11ea-9a27-e8a5ed0f796c.gif)
 

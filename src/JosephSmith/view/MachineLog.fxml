@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<BorderPane
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="JosephSmith.view.MachineLogController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <padding>
+        <Insets top="50" left="50"/>
+    </padding>
+    <top>
+        <HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Warranty History" styleClass="headerLabel"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="20" right="20" bottom="30" left="20"/>
+            </padding>
+            <TableView fx:id="logUITableView" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <Label styleClass="tableLabel"  text="There are no results for this search"/>
+                </placeholder>
+                <columns>
+                    <TableColumn fx:id="dateColumn" text="Date"/>
+                    <TableColumn fx:id="requestNumberColumn" text="Request Number"/>
+                    <TableColumn fx:id="serviceTagColumn" text="Service Tag"/>
+                    <TableColumn fx:id="modelColumn" text="Model"/>
+                    <TableColumn fx:id="machineIssueColumn" text="Machine Issue"/>
+                    <TableColumn fx:id="partNeededColumn" text="Part Needed"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+             </TableView>
+            <HBox spacing="10">
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Search:" styleClass="formLabel"/>
+                <TextField fx:id="logSearch"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
