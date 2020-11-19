@@ -15,6 +15,8 @@ Features of the Warranty Utility include:
 
 An update to the application to allow the creation of Technical Support requests through another Dell managed API is in progress as well as dispatch status tracking.
 
+The look of the Depot Utility has changed slightly and the Service Now section removed to be implemented later. 
+Figures and Descriptions will be updated soon.
 
 ## Warranty Machine Form:
 
