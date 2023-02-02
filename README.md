@@ -7,6 +7,8 @@ JFoenix and CSS were used to implement the visual design of the application.
 The information is stored in a local SQL Server database. 
 The application communicates to the Dell Tech Direct API using SOAP/REST requests.
 
+### Selenium: This application was converted to use api requests to improve speed and efficiency, the bulk of the previous Selenium functionality can be found here: https://github.com/GetchaPull1991/Depot-Utility/blob/493f48be34054b8de1b409f2320450143a1f2cf6/src/JosephSmith/MainUIGridPaneController.java
+
 Features of the Warranty Utility include:
   - Allows the user to submit dispatch requests for a list of machines
   - Allows the user to remove dispatch machines from the queue
